@@ -1,7 +1,7 @@
 ---
 title: Tidy Data
 categories: [tidy-data, data-wrangling, lecture, intermediate]
-description: "Introduces the tidy data principles, data normalization, relational data models, primary/foreign keys, and table joins."
+description: "Tidy data principles, data normalization, relational data models, primary/foreign keys, and table joins."
 ---
 
 :::{.callout-learning}

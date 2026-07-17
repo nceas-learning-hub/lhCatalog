@@ -1,7 +1,7 @@
 ---
 title: Programmatic Data Access in R
 categories: [apis, reproducibility, data-wrangling, lecture, intermediate]
-description: "Covers reproducible programmatic data access in R, including caching downloaded files, retrieving USGS water data with dataRetrieval, and building custom API requests with httr2."
+description: "Reproducible programmatic data access in R, including caching downloaded files, dataRetrieval package, and building custom API requests with httr2."
 ---
 
 <!--

@@ -2,7 +2,7 @@
 title: Intellectual Credit
 bibliography: resources/lecture_intellectual_credit/refs.bib
 categories: [team-science, synthesis-science, communication, lecture, intermediate]
-description: "Explores frameworks for equitable intellectual credit and authorship, including opt-in versus opt-out approaches, the CRediT taxonomy, and emerging issues like Indigenous data governance and generative AI."
+description: "Frameworks for equitable intellectual credit and authorship, including opt-in versus opt-out approaches, the CRediT taxonomy, and emerging issues like Indigenous data governance and genAI."
 ---
 
 :::{.callout-learning}

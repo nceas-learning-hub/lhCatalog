@@ -4,7 +4,8 @@
 ### * copies the resource folders into lhCatalog/lessons/resources
 ###   (some lessons need a .bib to render, even in execute: enabled: false)
 
-remotes::install_github('nceas-learning-hub/lhLessons')
+# remotes::install_github('nceas-learning-hub/lhLessons')
+
 lesson_fs <- list.files(system.file('lessons', package = 'lhLessons'), full.names = TRUE)
 resource_fs <- list.files(system.file('lesson_resources', package = 'lhLessons'), full.names = TRUE)  
 ### Remove all old lessons

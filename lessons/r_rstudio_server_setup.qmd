@@ -1,7 +1,7 @@
 ---
 title: RStudio Server Setup
 categories: [computing-setup, setup, beginner]
-description: "Covers logging into RStudio Server, creating and organizing an R Project, and understanding absolute versus relative file paths."
+description: "RStudio Server basics, creating and organizing an R Project, and understanding absolute versus relative file paths."
 ---
 
 :::{.callout-tip}

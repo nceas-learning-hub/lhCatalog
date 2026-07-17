@@ -1,7 +1,7 @@
 ---
 title: Literate Analysis with Quarto
 categories: [quarto, reproducibility, lecture, beginner]
-description: "Introduces literate analysis with Quarto, covering document structure, Markdown syntax, code chunks, and building a complete reproducible analysis."
+description: "Literate analysis with Quarto, covering document structure, Markdown syntax, code chunks, and building a complete reproducible analysis."
 ---
 
 :::{.callout-learning}

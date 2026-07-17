@@ -1,7 +1,7 @@
 ---
 title: Interactivity with Shiny Apps
 categories: [shiny, dashboards, data-visualization, lecture, intermediate]
-description: "Introduces building interactive Shiny web applications in R, covering UI/server structure, reactivity, single- versus two-file app organization, and options for sharing apps."
+description: "Interactive Shiny web applications in R, covering UI/server structure, reactivity, single- versus two-file app organization, and options for sharing apps."
 ---
 
 <!--

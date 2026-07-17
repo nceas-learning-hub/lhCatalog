@@ -2,7 +2,7 @@
 title: Publishing Synthesis Data
 bibliography: resources/lecture_publishing_data/refs.bib
 categories: [data-management, reproducibility, provenance, synthesis-science, lecture, intermediate]
-description: "Covers data preservation and discovery in the open science lifecycle, choosing a data repository, writing complete metadata, and applying FAIR and CARE principles."
+description: "Data preservation and discovery in the open science lifecycle, choosing a data repository, writing complete metadata, and applying FAIR and CARE principles."
 ---
 
 :::{.callout-learning}

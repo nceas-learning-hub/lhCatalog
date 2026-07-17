@@ -1,7 +1,7 @@
 ---
 title: "Science Communication Fundamentals"
 categories: [communication, lecture, beginner]
-description: "Introduces science communication strategies, including the Message Box, the And-But-Therefore storytelling framework, managing jargon, and adapting messages to different audiences."
+description: "Science communication strategies, including the Message Box, the And-But-Therefore storytelling framework, managing jargon, and adapting messages to different audiences."
 ---
 
 <!--

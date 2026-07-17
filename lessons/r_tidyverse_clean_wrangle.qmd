@@ -1,7 +1,7 @@
 ---
 title: Cleaning & Wrangling Data
 categories: [tidyverse, data-wrangling, lecture, intermediate]
-description: "Covers core dplyr and tidyr functions for cleaning, reshaping, and summarizing data, including pipes, mutate, pivoting, and the split-apply-combine strategy."
+description: "tidyverse functions for cleaning, reshaping, and summarizing data, including pipes, mutate, pivoting, and the split-apply-combine strategy."
 ---
 
 :::{.callout-learning}

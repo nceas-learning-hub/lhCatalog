@@ -1,7 +1,7 @@
 ---
 title: Blank placeholder
 categories: [template]
-description: "A blank template lesson demonstrating expected structure and style for contributing new lessons to the course."
+description: "Blank template showing structure and style for contributing new lessons."
 ---
 
 <!--

@@ -1,7 +1,7 @@
 ---
 title: "One Pagers with Google Documents"
 categories: [communication, lecture, beginner]
-description: "Workshop on designing graphical one-pagers in Google Docs to communicate complex scientific information and working group outputs to a general audience."
+description: "Designing graphical one-pagers in Google Docs to communicate complex scientific information and working group outputs to a general audience."
 ---
 
 <iframe width="560" height="380"src="https://docs.google.com/presentation/d/1PWeFAZ0KFI84WmwJJIwzYSaWpg91Trbj-AQi1G2oQGI/preview" allowfullscreen></iframe>

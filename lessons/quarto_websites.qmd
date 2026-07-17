@@ -1,7 +1,7 @@
 ---
 title: Building a Website with Quarto
 categories: [quarto, websites, github, lecture, intermediate]
-description: "Walks through creating, deploying, and customizing a Quarto website hosted on GitHub Pages using GitHub Actions and SCSS stylesheets."
+description: "Creating, deploying, and customizing a Quarto website hosted on GitHub Pages using GitHub Actions and SCSS stylesheets."
 ---
 
 <!--

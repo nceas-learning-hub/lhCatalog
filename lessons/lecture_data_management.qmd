@@ -1,7 +1,7 @@
 ---
 title: Data Management Essentials
 categories: [data-management, reproducibility, synthesis-science, lecture, intermediate]
-description: "Covers the Data Life Cycle, data management plans, metadata best practices, and the FAIR and CARE principles for managing synthesis research data."
+description: "The Data Life Cycle, data management plans, metadata best practices, and FAIR and CARE principles for managing synthesis data."
 ---
 
 :::{.callout-tip}

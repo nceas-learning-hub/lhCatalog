@@ -1,7 +1,7 @@
 ---
 title: Geospatial Raster Analysis in R
 categories: [spatial-data, data-visualization, tidyverse, lecture, advanced]
-description: "Introduces raster spatial data analysis in R using the terra package, covering raster creation, raster math, modifying spatial parameters, and extracting values."
+description: "Raster spatial data analysis in R using the terra package, covering raster creation, raster math, modifying spatial parameters, and extracting values."
 ---
 
 <!--

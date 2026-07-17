@@ -1,7 +1,7 @@
 ---
 title: Writing Functions
 categories: [functions, r-basics, lecture, intermediate]
-description: "Covers why and how to write custom R functions, including documenting functions with roxygen2 comments."
+description: "Why and how to write custom R functions, including documenting functions with roxygen2 comments."
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Data Management and Reproducibility"
 categories: [data-management, reproducibility, lecture, beginner]
-description: "Overview workshop on data management planning and tools/systems that support reproducible, collaborative analytical workflows."
+description: "Data management planning and tools/systems that support reproducible, collaborative analytical workflows."
 ---
 
 <iframe width="560" height="380"src="https://docs.google.com/presentation/d/1LKanKcsnhOHunpeKuoS2__TQQ4wR7Gt2VBH-8qD-PJM/preview"allowfullscreen></iframe>

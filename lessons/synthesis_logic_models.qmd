@@ -1,7 +1,7 @@
 ---
 title: Logic Models and Synthesis Development
 categories: [synthesis-science, project-management, lecture, intermediate]
-description: "Introduces logic models (inputs, outputs, outcomes) as a planning tool and applies them to developing and refining synthesis research questions."
+description: "Logic models (inputs, outputs, outcomes) as a planning tool and applies them to developing and refining synthesis research questions."
 ---
 
 :::{.callout-learning}

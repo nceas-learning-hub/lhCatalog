@@ -1,7 +1,7 @@
 ---
 title: Interactive Dashboards with Quarto
 categories: [quarto, dashboards, data-visualization, shiny, lecture, intermediate]
-description: "Covers building interactive Quarto Dashboards with value boxes, Plotly charts, and DT tables, plus optional Shiny reactivity and deployment options."
+description: "Interactive Quarto Dashboards with value boxes, Plotly charts, and DT tables, plus optional Shiny reactivity and deployment options."
 ---
 
 <!--

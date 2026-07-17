@@ -1,7 +1,7 @@
 ---
 title: Advanced Git and GitHub
 categories: [git, github, collaboration, lecture, advanced]
-description: "Covers advanced Git and GitHub operations, including branches, forks, pull requests, and undoing commits with reset and revert."
+description: "Advanced Git and GitHub operations, including branches, forks, pull requests, reset, revert."
 ---
 
 <!--

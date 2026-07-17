@@ -1,7 +1,7 @@
 ---
 title: Thinking Preferences & Meeting Design
 categories: [team-science, facilitation, activity, beginner]
-description: "Explores thinking-style frameworks and meeting design techniques for fostering equitable participation and inclusive facilitation in team settings."
+description: "Thinking-style frameworks and meeting design techniques for fostering equitable participation and inclusive facilitation in team settings."
 ---
 
 :::{.callout-learning}

@@ -3,7 +3,7 @@ title: "Practice Session: Collaborative Report"
 bibliography: "resources/r_practice_clean_wrangle_visualize/refs.bib"
 exercises: ### for custom exercise callouts
   number: false ### suppress numbering
-categories: [data-wrangling, data-visualization, tidyverse, git, github, collaboration, activity, intermediate]
+categories: [data-wrangling, data-visualization, tidyverse, git, github, collaboration, activity, intermediate, practice]
 description: "Paired practice session cleaning, wrangling, and visualizing lobster data collaboratively, then publishing a joint report to GitHub Pages."
 ---
 <!-- recommended prerequisites: 

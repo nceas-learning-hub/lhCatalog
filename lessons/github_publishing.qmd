@@ -1,7 +1,7 @@
 ---
 title: Publishing to the Web
 categories: [github, quarto, websites, lecture, intermediate]
-description: "Demonstrates how to use Git, GitHub Pages, and Quarto together to publish a rendered analysis as a website."
+description: "Applying Git, GitHub Pages, and Quarto to publish a rendered analysis as a website."
 ---
 
 :::{.callout-learning}

@@ -1,6 +1,6 @@
 ---
 title: "Practice Session: Functions"
-categories: [functions, activity, beginner]
+categories: [functions, activity, beginner, practice]
 description: "Practice exercises for writing, testing, and adding error/warning messages to custom R functions."
 ---
 

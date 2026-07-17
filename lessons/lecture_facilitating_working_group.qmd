@@ -1,7 +1,7 @@
 ---
 title: "Facilitating a successful working group"
 categories: [team-science, facilitation, lecture, beginner]
-description: "Workshop on best practices for managing a working group before, during, and after meetings, with tips on team communication and facilitation."
+description: "Best practices for managing a working group before, during, and after meetings, with tips on team communication and facilitation."
 ---
 
 

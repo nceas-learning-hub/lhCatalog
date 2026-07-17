@@ -1,7 +1,7 @@
 ---
 title: Collaborating with Git and GitHub
 categories: [git, github, collaboration, lecture, intermediate]
-description: "Covers collaborative Git/GitHub workflows, including adding collaborators, syncing changes, and identifying and resolving merge conflicts."
+description: "Collaborative Git/GitHub workflows, including adding collaborators, syncing changes, and resolving merge conflicts."
 ---
 
 :::{.callout-learning}

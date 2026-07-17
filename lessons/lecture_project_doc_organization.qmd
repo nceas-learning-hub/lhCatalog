@@ -2,7 +2,7 @@
 title: Project Documentation & Organization
 bibliography: resources/lecture_project_doc_organization/refs.bib
 categories: [reproducibility, data-management, project-management, lecture, beginner]
-description: "Covers project documentation and file organization best practices for reproducibility, plus an introduction to generative AI use-cases, modalities, and drawbacks in research workflows."
+description: "Project documentation and file organization best practices for reproducibility, plus an introduction to genAI use-cases, modalities, and drawbacks in research workflows."
 ---
 
 :::{.callout-learning}

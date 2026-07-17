@@ -32,7 +32,7 @@ Ben Bolker, Amber E. Budden, Julien Brun, Angel Chen, Samantha Csik, Halina Do-L
 
 <style>
 #all-lessons table {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
 }
 </style>
 

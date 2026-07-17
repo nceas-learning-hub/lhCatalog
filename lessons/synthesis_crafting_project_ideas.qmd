@@ -1,7 +1,7 @@
 ---
 title: Crafting Synthesis Project Ideas
 categories: [synthesis-science, team-science, facilitation, lecture, intermediate]
-description: "Explores the diamond model of participatory decision making, navigating the 'groan zone,' and tools for supporting divergent, emergent, and convergent team thinking."
+description: "Participatory decision making, navigating the 'groan zone,' and tools for supporting divergent, emergent, and convergent team thinking."
 ---
 
 :::{.callout-learning}

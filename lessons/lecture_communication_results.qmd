@@ -1,7 +1,7 @@
 ---
 title: "Communicating Your Results"
 categories: [communication, lecture, beginner]
-description: "Workshop on pathways for promoting published research, including social media, press releases, and stakeholder communication."
+description: "Pathways for promoting published research, including social media, press releases, and stakeholder communication."
 ---
 
 

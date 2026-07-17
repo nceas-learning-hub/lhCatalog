@@ -1,7 +1,7 @@
 ---
 title: Creating R Packages
 categories: [packages, functions, lecture, intermediate]
-description: "Explains how to create, document, test, and share an R package using usethis, devtools, and roxygen2."
+description: "Creating, documenting, testing, and sharing an R package using usethis, devtools, and roxygen2."
 ---
 
 :::{.callout-learning}

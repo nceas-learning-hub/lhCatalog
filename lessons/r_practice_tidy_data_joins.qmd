@@ -1,6 +1,6 @@
 ---
 title: "Practice Session: Joins"
-categories: [tidy-data, data-wrangling, activity, intermediate]
+categories: [tidy-data, data-wrangling, activity, intermediate, practice]
 description: "Practice exercises joining bird survey data tables together and identifying primary and foreign keys."
 ---
 

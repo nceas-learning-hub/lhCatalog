@@ -1,7 +1,7 @@
 ---
 title: "GitHub for Project Management"
 categories: [github, project-management, lecture, beginner]
-description: "Workshop introducing how to structure a GitHub repository and use GitHub Issues and Projects to support project management and communication."
+description: "How to structure a GitHub repository and use GitHub Issues and Projects to support project management and communication."
 ---
 
 

@@ -2,7 +2,7 @@
 title: Data Management & Data Discovery
 bibliography: "resources/lecture_data_mgmt_discovery/refs.bib"
 categories: [data-management, reproducibility, apis, lecture, intermediate]
-description: "Covers the Data Life Cycle, strategies for finding and inventorying data, data management planning, metadata best practices, and accessing data via the Box API."
+description: "The Data Life Cycle, strategies for finding and inventorying data, data management planning, metadata best practices."
 ---
 
 :::{.callout-learning}

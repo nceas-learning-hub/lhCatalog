@@ -1,7 +1,7 @@
 ---
 title: Machine Learning with `tidymodels`
 categories: [machine-learning, tidymodels, lecture, advanced]
-description: "Introduces the machine learning workflow in R using tidymodels, covering data partitioning, model fitting, cross-validation, model comparison, and hyperparameter tuning."
+description: "Machine learning workflow in R using tidymodels, covering data partitioning, model fitting, cross-validation, model comparison, and hyperparameter tuning."
 ---
 
 <!--

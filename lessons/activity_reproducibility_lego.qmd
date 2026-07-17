@@ -1,7 +1,7 @@
 ---
 title: "Reproducibility: a LEGO Activity"
 categories: [reproducibility, activity, beginner]
-description: "A hands-on activity using LEGO builds to explore documentation practices and challenges related to reproducibility."
+description: "Hands-on activity using LEGO builds to explore documentation practices and challenges related to reproducibility."
 ---
 
 ## Reproducibility activity using LEGO®
