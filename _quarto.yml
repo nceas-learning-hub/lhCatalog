@@ -12,6 +12,7 @@ exercises: ### for custom theme callouts
 editor: source
 execute:
   freeze: auto
+  enabled: false
 
 format:
   theme-html:
@@ -50,7 +51,6 @@ website:
     contents:
       - index.qmd # preface
       # START SESSIONS
-      # SESSION_LINKS
       # END SESSIONS
 
   page-footer:
