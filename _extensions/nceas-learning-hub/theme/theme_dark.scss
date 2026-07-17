@@ -160,6 +160,10 @@ pre code {
   padding: 1em;
 }
 
+.quarto-listing-table {
+  font-size: 0.85rem !important;
+}
+
 // Code chunk output
 pre code:not(.sourceCode) {
   background-color: $lh-gray-0;
