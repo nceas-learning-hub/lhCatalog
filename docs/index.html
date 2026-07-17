@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      page: 30,
+      page: 15,
     pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-title","listing-author"],
     };
@@ -239,13 +239,7 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#about-this-catalog" id="toc-about-this-catalog" class="nav-link active" data-scroll-target="#about-this-catalog"><span class="header-section-number">1</span> About this catalog</a></li>
-  </ul>
-</nav>
+        
     <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(46)</span></div><div class="category" data-category="YWN0aXZpdHk=">activity <span class="quarto-category-count">(5)</span></div><div class="category" data-category="YWR2YW5jZWQ=">advanced <span class="quarto-category-count">(5)</span></div><div class="category" data-category="YXBpcw==">apis <span class="quarto-category-count">(2)</span></div><div class="category" data-category="YmVnaW5uZXI=">beginner <span class="quarto-category-count">(18)</span></div><div class="category" data-category="Y29sbGFib3JhdGlvbg==">collaboration <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Y29tbXVuaWNhdGlvbg==">communication <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Y29tcHV0aW5nLXNldHVw">computing-setup <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ZGFzaGJvYXJkcw==">dashboards <span class="quarto-category-count">(2)</span></div><div class="category" data-category="ZGF0YS1tYW5hZ2VtZW50">data-management <span class="quarto-category-count">(5)</span></div><div class="category" data-category="ZGF0YS12aXN1YWxpemF0aW9u">data-visualization <span class="quarto-category-count">(6)</span></div><div class="category" data-category="ZGF0YS13cmFuZ2xpbmc=">data-wrangling <span class="quarto-category-count">(5)</span></div><div class="category" data-category="ZmFjaWxpdGF0aW9u">facilitation <span class="quarto-category-count">(4)</span></div><div class="category" data-category="ZnVuY3Rpb25z">functions <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Z2l0">git <span class="quarto-category-count">(6)</span></div><div class="category" data-category="Z2l0aHVi">github <span class="quarto-category-count">(9)</span></div><div class="category" data-category="aW50ZXJtZWRpYXRl">intermediate <span class="quarto-category-count">(22)</span></div><div class="category" data-category="bGVjdHVyZQ==">lecture <span class="quarto-category-count">(36)</span></div><div class="category" data-category="bWFjaGluZS1sZWFybmluZw==">machine-learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cGFja2FnZXM=">packages <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cGFyYWxsZWwtY29tcHV0aW5n">parallel-computing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cHJvamVjdC1tYW5hZ2VtZW50">project-management <span class="quarto-category-count">(5)</span></div><div class="category" data-category="cHJvdmVuYW5jZQ==">provenance <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cXVhcnRv">quarto <span class="quarto-category-count">(4)</span></div><div class="category" data-category="ci1iYXNpY3M=">r-basics <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cmVwcm9kdWNpYmlsaXR5">reproducibility <span class="quarto-category-count">(9)</span></div><div class="category" data-category="c2V0dXA=">setup <span class="quarto-category-count">(4)</span></div><div class="category" data-category="c2hpbnk=">shiny <span class="quarto-category-count">(2)</span></div><div class="category" data-category="c3BhdGlhbC1kYXRh">spatial-data <span class="quarto-category-count">(2)</span></div><div class="category" data-category="c3ludGhlc2lzLXNjaWVuY2U=">synthesis-science <span class="quarto-category-count">(5)</span></div><div class="category" data-category="dGVhbS1zY2llbmNl">team-science <span class="quarto-category-count">(5)</span></div><div class="category" data-category="dGVtcGxhdGU=">template <span class="quarto-category-count">(1)</span></div><div class="category" data-category="dGlkeS1kYXRh">tidy-data <span class="quarto-category-count">(2)</span></div><div class="category" data-category="dGlkeW1vZGVscw==">tidymodels <span class="quarto-category-count">(1)</span></div><div class="category" data-category="dGlkeXZlcnNl">tidyverse <span class="quarto-category-count">(5)</span></div><div class="category" data-category="d2Vic2l0ZXM=">websites <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -254,13 +248,21 @@ window.Quarto = {
 
 
 
-<p>The <a href="https://www.nceas.ucsb.edu/" class="external" target="_blank">National Center for Ecological Analysis and Synthesis (NCEAS)</a>, a research affiliate of UCSB, is a leading expert on interdisciplinary data science and works collaboratively to answer the world’s largest and most complex questions. The NCEAS approach leverages existing data and employs a team science philosophy to squeeze out all potential insights and solutions efficiently - this is called <a href="https://www.nceas.ucsb.edu/our-approach" class="external" target="_blank">synthesis science</a>.</p>
-<section id="about-this-catalog" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="about-this-catalog"><span class="header-section-number">1</span> About this catalog</h2>
-<p>These written materials are the result of a continuous and collaborative effort at NCEAS to help researchers make their work more transparent and reproducible. This work began in the early 2000’s, and reflects the expertise and diligence of many, many individuals.</p>
+<p>The <a href="https://www.nceas.ucsb.edu/" class="external" target="_blank">National Center for Ecological Analysis and Synthesis (NCEAS)</a>, a research affiliate of UCSB, is a leading expert on interdisciplinary data science and works collaboratively to answer the world’s largest and most complex questions. The NCEAS approach leverages existing data and employs a team science philosophy to squeeze out all potential insights and solutions efficiently - this is called <a href="https://www.nceas.ucsb.edu/our-approach" class="external" target="_blank">synthesis science</a>. These written materials are the result of a continuous and collaborative effort at NCEAS to help researchers make their work more transparent and reproducible. This work began in the early 2000’s, and reflects the expertise and diligence of many, many individuals.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">License</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Citation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Content Contributors</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>This work is licensed under a <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
-<p><strong>Citation:</strong> NCEAS Learning Hub (2026). <code>lhLessons</code>: NCEAS Learning Hub Lessons Package. <a href="https://nceas-learning-hub.github.io/lh_packages/">https://nceas-learning-hub.github.io/lh_packages</a>.</p>
-<p><strong>Content contributors:</strong> Ben Bolker, Amber E. Budden, Julien Brun, Angel Chen, Samantha Csik, Halina Do-Linh, Natasha Haycock-Chavez, S. Jeanette Clark, Julie Lowndes, Stephanie Hampton, Matt Jones, Samantha Katz, Nick J. Lyon, Erin McLean, Bryce Mecum, Casey O’Hara, Deanna Pennington, Karthik Ram, Jim Regetz, Tracy Teal, Camila Vargas Poulsen, Daphne Virlar-Knight, Leah Wasser.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>NCEAS Learning Hub (2026). <code>lhLessons</code>: NCEAS Learning Hub Lessons Package. <a href="https://nceas-learning-hub.github.io/lh_packages/">https://nceas-learning-hub.github.io/lh_packages</a>.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Ben Bolker, Amber E. Budden, Julien Brun, Angel Chen, Samantha Csik, Halina Do-Linh, Natasha Haycock-Chavez, S. Jeanette Clark, Julie Lowndes, Stephanie Hampton, Matt Jones, Samantha Katz, Nick J. Lyon, Erin McLean, Bryce Mecum, Casey O’Hara, Deanna Pennington, Karthik Ram, Jim Regetz, Tracy Teal, Camila Vargas Poulsen, Daphne Virlar-Knight, Leah Wasser.</p>
+</div>
+</div>
+</div>
 <div id="listing-all-lessons" class="quarto-listing quarto-listing-container-table">
 <div class="listing-actions-group">
    <div class="input-group input-group-sm quarto-listing-sort">
@@ -812,7 +814,6 @@ No matching items
 
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
