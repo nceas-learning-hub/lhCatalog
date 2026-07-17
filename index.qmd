@@ -1,11 +1,30 @@
 ---
-title: "Browse Lessons"
+title: "Learning Hub Lessons Catalog"
 listing:
+  id: all-lessons
   contents: lessons
-  type: grid
+  type: table
   categories: true
   sort: "title"
   fields: [title, description, categories]
   field-display-names:
     categories: "Tags"
 ---
+
+The [National Center for Ecological Analysis and Synthesis (NCEAS)](https://www.nceas.ucsb.edu/){.external target="_blank"}, a research affiliate of UCSB, is a leading expert on interdisciplinary data science and works collaboratively to answer the world's largest and most complex questions. The NCEAS approach leverages existing data and employs a team science philosophy to squeeze out all potential insights and solutions efficiently - this is called [synthesis science](https://www.nceas.ucsb.edu/our-approach){.external target="_blank"}.
+
+## About this catalog
+
+These written materials are the result of a continuous and collaborative effort at NCEAS to help researchers make their work more transparent and reproducible. This work began in the early 2000's, and reflects the expertise and diligence of many, many individuals.
+
+This work is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+
+**Citation:** NCEAS Learning Hub (2026). `lhLessons`: NCEAS Learning Hub Lessons Package. [https://nceas-learning-hub.github.io/lh_packages](https://nceas-learning-hub.github.io/lh_packages/).
+
+**Content contributors:** Ben Bolker, Amber E. Budden, Julien Brun, Angel Chen, Samantha Csik, Halina Do-Linh, Natasha Haycock-Chavez, S. Jeanette Clark, Julie Lowndes, Stephanie Hampton, Matt Jones, Samantha Katz, Nick J. Lyon, Erin McLean, Bryce Mecum, Casey O'Hara, Deanna Pennington, Karthik Ram, Jim Regetz, Tracy Teal, Camila Vargas Poulsen, Daphne Virlar-Knight, Leah Wasser.
+
+::: {#all-lessons}
+:::
+
+This is a Quarto-built website. To learn more about Quarto sites visit [https://quarto.org/docs/websites/](https://quarto.org/docs/websites).
+

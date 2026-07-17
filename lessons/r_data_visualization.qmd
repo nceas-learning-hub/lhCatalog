@@ -4,86 +4,100 @@ categories: [data-visualization, tidyverse, lecture, intermediate]
 description: "Introduces plotting with ggplot2, including customizing themes and aesthetics, and creating interactive maps and tables with leaflet and DT."
 ---
 
-:::{.callout-tip}
-## Learning Objectives
+<!--
+Possible prerequisites
+- Quarto intro
+- R data wrangling
+-->
 
+:::{.callout-learning}
+After completing this session, you will be able to:
 
-- Understand the fundamentals of how the `ggplot2` package works
-- Use `ggplot2`'s `theme` and other customization functions create publication-grade graphics
-- Introduce the `leaflet` and `DT` package to create interactive maps and tables respectively
+- Describe the four essential components of a `ggplot2::ggplot()` call
+- Use `theme` and other functions to customize appealing data visualizations
+- Use `facet_wrap()` to create multiple related plots in one figure
+- Use `ggplotly()` to convert a static `ggplot2` plot into an interactive visualization
 :::
 
 ## Overview
 
-`ggplot2` is a popular package for visualizing data in R.
+`ggplot2` is a popular package for visualizing data in R, designed to work seamlessly with the `tidyverse` ecosystem of packages.
 From the [home page](http://ggplot2.tidyverse.org/):
 
 > `ggplot2` is a system for declaratively creating graphics, based on The Grammar of Graphics. You provide the data, tell `ggplot2` how to map variables to aesthetics, what graphical primitives to use, and it takes care of the details.
 
-
-It's been around for years and has pretty good documentation and tons of example code around the web (like on [StackOverflow](https://stackoverflow.com/questions/tagged/ggplot2)). The goal of this lesson is to explain the fundamentals of how `ggplot2` work, introduce useful functions for customizing your plots and inspire you to go and explore this awesome resource for visualizing your data.
+The goal of this lesson is to explain the fundamentals of how `ggplot2` work, introduce useful functions for customizing your plots, and inspire you to go and explore this awesome resource for visualizing your data.
 
 ::: callout-note
 
 ## `ggplot2` vs base graphics in R vs others
-There are many different ways to plot your data in R. All of them work! However, `ggplot2` excels at making complicated plots easy and easy plots simple enough
+There are many different ways to plot your data in R.  All of them can be used to make functional plots! However, `ggplot2` uses a reasonably intuitive syntax to build up a plot in layers and customize it in many different ways. It also has a lot of built in themes and color palettes that can make your plots look nice with just a few lines of code.
 
-Base R graphics  (`plot()`, `hist()`, etc) can be helpful for simple, quick and dirty plots. `ggplot2` can be used for almost everything else.
+Base R graphics  (`plot()`, `hist()`, etc) can be helpful for simple, quick-and-dirty plots, e.g., for data exploration, but it can be hard to decipher and customize. `ggplot2` can be used for almost everything else, including publication-ready graphics.
 
 :::
 
-Let's dive into creating and customizing plots with `ggplot2`.
-
-::: callout-tip
 ## Setup
 
-0. Make sure you’re in the right project (`training_{USERNAME}`) and use the `Git` workflow by `Pull`ing to check for any changes. Then, create a new Quarto document, delete the default text, and save this document.
+Make sure you’re in the right project (`training_<username>`). Use Git Pull to check for any changes. Then, create a `notebooks/` folder at the top level of your project, create a new Quarto document, and save it as **`data-visualization.qmd`** inside that folder.
 
-1. Load the packages we'll need:
+- Depending on your IDE, the new document may include default template content below the YAML header. If so, delete anything below the `---` before continuing.
+
+:::{.callout-tip collapse=true}
+## Quarto header options?
+
+Consider adding Quarto options to the YAML header to control the output:
+```yaml
+format:
+  html:
+    code-fold: true
+    code-summary: "Show code"
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+```
+:::
+
+### Load Packages
+
+Load the packages we'll need. They're grouped by purpose to make it easier to remember what each one does.
 
 ```{r load_packages}
 #| message: false
 #| warning: false
 
+### Data wrangling
 library(readr)
+library(here)      ### for robust relative file paths
 library(dplyr)
 library(tidyr)
-library(forcats) # makes working with factors easier
+library(forcats)   ### tools for working with factors (e.g., reordering)
+library(janitor)   ### clean column names
+
+### Visualization
 library(ggplot2)
-library(leaflet) # interactive maps
-library(DT) # interactive tables
-library(scales) # scale functions for visualization
-library(janitor) # expedite cleaning and exploring data
-library(viridis) # colorblind friendly color palette
+
+### Interactive output
+library(plotly)
 ```
 
+### Load the Data
 
-
-2. Load the data directly from the [EDI Data Repository: Sacramento-San Joaquin Delta Socioecological Monitoring ](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.587.1). Navigate to the link above, scroll down and under *Resources*, hover over the "Download" button for the "Socioecological monitoring data", right click, and save to your data folder.
-
-```{r}
-#| message: false
-#| warning: false
-#| echo: false
-#| eval: false
-
-### THIS LINK NO LONGER WORKS
-
-delta_visits_raw <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.587.1&entityid=cda8c1384af0089b506d51ad8507641f")
-
-```
+Download the data from the [EDI Data Repository](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.587.1): scroll to *Resources*, click the "Socioecological monitoring data" download button, and save to your `data/` folder. Then read it in:
 
 ```{r}
 #| echo: false
 #| eval: true
 
 ### NOTE THIS CHUNK IS HIDDEN (echo: false) AND EVALUATED (eval: true)
-### FOR THE PURPOSES OF RENDERING THE LESSON, WITH EXTRA FOLDER IN PATH.
+### FOR THE PURPOSES OF RENDERING THE LESSON, WITH THE EXTRA FOLDER IN PATH.
 ### THE FOLLOWING CHUNK (echo: true and eval: false) IS FOR WHERE USERS SHOULD
 ### SAVE FILES.
 
-delta_visits_raw <- read_csv(here::here("data/r_data_visualization/Socioecological_monitoring_data.csv"))
-
+delta_visits_raw <- read_csv(here("data/r_data_visualization", 
+                                  "Socioecological_monitoring_data.csv"),
+                             show_col_types = FALSE)
 ```
 
 ```{r}
@@ -91,491 +105,539 @@ delta_visits_raw <- read_csv(here::here("data/r_data_visualization/Socioecologic
 #| eval: false
 
 # read in data from the data directory after manually downloading data 
-delta_visits_raw <- read_csv(here::here("data/Socioecological_monitoring_data.csv"))
+delta_visits_raw <- read_csv(here("data/Socioecological_monitoring_data.csv"))
 
 ```
 
-3. Learn about the data. For this session we are going to be working with data on **Socioecological Monitoring on the Sacramento-San Joaquin Delta**. Check out [the documentation](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.587.1).
+### Learn About the Data
 
-4. Finally, let's explore the data we just read into our working environment. 
+For this session we are going to be working with data on **Socioecological Monitoring on the Sacramento-San Joaquin Delta**. Check out [the documentation](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.587.1): read the abstract, explore the metadata, check the intellectual rights, etc. 
+
+### Explore the Data
+
+Finally, let's explore the data we just read into our working environment. 
 
 ```r
-## Check out column names
-
+### Check out column names
 colnames(delta_visits_raw)
 
-## Peak at each column and class
+### Peek at each column and class
 glimpse(delta_visits_raw)
 
-## From when to when
+### From when to when
 range(delta_visits_raw$Date)
 
-## Which time of day?
+### Which time of day?
 unique(delta_visits_raw$Time_of_Day)
 ```
 
-:::
 
+## Prepare the Data
 
+We nearly always need to do some wrangling before we can analyze and plot our data.  Here we will wrangle our data into a tidy format that is `ggplot2`-friendly.
 
-## Getting the data ready
+### Clean Column Names
 
-It is more frequent than not, that we need to do some wrangling before we can plot our data the way we want to. After reading and exploring our data, we'll put our data wrangling skills to practice to get our data in the desired format.
-
-
-::: callout-important
-## Side note on clean column names
-`janitor::clean_names()` is an awesome function to transform all column names into the same format. The default format for this function is snake_case_format. We highly recommend having clear well formatted column names. It makes your life easier down the line.
-
-How it works?
+`janitor::clean_names()` converts all column names to consistent `snake_case` in a single line:
 
 ```{r}
-delta_visits <- delta_visits_raw %>% 
-    janitor::clean_names()
+colnames(delta_visits_raw)[1:6]
+
+delta_visits <- delta_visits_raw %>%
+  janitor::clean_names()
+
+colnames(delta_visits)[1:6]
 ```
 
-And that's it! If we look to the column names of the object `delta_visits` we can see all the columns are in a lowercase, snake format.
+### Reshape to Long (Tidy) Format
+
+Recall the [tidy data principles](https://r4ds.hadley.nz/data-tidy.html#fig-tidy-structure).
+
+1. Each variable is a column; each column is a variable.
+2. Each observation is a row; each row is an observation.
+3. Each value is a cell; each cell is a single value.
+
+Which (if any) of these principles are violated in our data frame `delta_visits`?
+
+`ggplot2` works best with **tidy data** — one row per observation. Our visitor-type counts are spread across multiple columns, so we pivot them (using `tidyr::pivot_longer()`) into a single `visitor_type` column:
 
 ```{r}
-colnames(delta_visits)
-```
+visits_long <- delta_visits %>%
+  tidyr::pivot_longer(
+    cols = c(sm_boat, med_boat, lrg_boat, bank_angler, scientist, cars),
+    names_to = "visitor_type",
+    values_to = "quantity"
+  ) %>%
+  ### shorten the long name:
+  dplyr::rename(restore_loc = eco_restore_approximate_location) %>%
+  ### drop the notes column:
+  dplyr::select(-notes)
 
-:::
-
-
-With the [tidy data principles](https://learning.nceas.ucsb.edu/2024-06-delta/session_06.html) in mind. Is this data tidy?
-
-1. Every column is a variable.
-2. Every row is an observation.
-3. Every cell is a single value.
-
-`ggplot2` for the most part likes data input to be in a long format (aka "tidy"). So let go ahead and make this data frame long instead of wide. Do you remember the name of the function we can use?
-
-Let's refresh our memory on how this function works by accessing the `help` page. Type `?pivot_long()` in the console to see the documentation for this function.
-
-```{r}
-
-visits_long <- delta_visits %>% 
-    pivot_longer(cols = c(sm_boat, med_boat, lrg_boat, bank_angler, scientist, cars),
-                 names_to = "visitor_type",
-                 values_to = "quantity") %>%
-    rename(restore_loc = eco_restore_approximate_location) %>% 
-    select(-notes)
-
-## Checking the outcome
-head(visits_long)
-
+glimpse(visits_long)
 ```
 
 
 
 ::: callout-exercise
 
-- Calculate the daily visits by `restore_loc`, `date`, and `visitor_type`.
+Using the `visits_long` dataframe, calculate the daily visits by `restore_loc`, `date`, and `visitor_type`.  Assign the result to a new object called `daily_visits_loc`.  Then inspect the result.
 
-:::{.callout-answer}
+::::{.callout-answer}
  
 ```{r mean_esc}
-#| message: false
 daily_visits_loc <- visits_long %>%
-    group_by(restore_loc, date, visitor_type) %>% 
-    summarise(daily_visits = sum(quantity))
+    dplyr::group_by(restore_loc, date, visitor_type) %>% 
+    dplyr::summarize(daily_visits = sum(quantity), .groups = 'drop')
     
-head(daily_visits_loc)
-
+glimpse(daily_visits_loc)
 ```
 
-The chunk above uses some of the dplyr functions that we've used in the past. We use `group_by()` to indicate that we want to calculate our results for the unique combinations of type of visit, restoration location proximity, and day.  We next use `summarise()` to calculate an daily visit value for each of these groups. Note we use the `%in%` operator to pipe in the result of one command as an argument to the next one.
+Refresher:
+
+* `group_by()` to calculate our results for the unique combinations of type of visit, restoration location proximity, and day.  
+* `summarise()` to sum up the daily visit value for each of these groups. 
+* `%>%` operator to pipe in the result of one command as an argument to the next one.
+
+::::
 
 :::
 
-:::
+## Plot With `ggplot2`
 
-## Plotting with `ggplot2`
+### Essential Components
 
-### Essential components
-First, we’ll cover some `ggplot2` basics to create the foundation of our plot. Then, we’ll add on to make our great customized data visualization.
+Every `ggplot2` call requires four essential components:
 
-::: {.callout-tip}
+1. **`ggplot()`** opens the plot (note, the **package** is called `ggplot2` but the function is just `ggplot()`.  What happened to the original `ggplot`? [it is still out there](https://github.com/hadley/ggplot1), but really only for historical interest!)
+2. **`data = <dataframe>`** defines the **data**frame to use
+3. **`mapping = aes(<args>)`** maps variables to **aes**thetic visual properties (x axis, y axis, size, color, fill, etc.)
+4. **`geom_*()`** defines the plot type, aka **geom**etry (bar, column, point, line, box, etc.)
 
-### The basics
+Layers are added with `+` operator instead of a pipe operator `%>%` or `|>`.
 
-1. Indicate we are using `ggplot()` (call the `ggplot2::ggplot()` function)
-2. What data do we want to plot? (`data = my_data`)
-3. What are the mapping aesthetics? What variables do we want to plot? (define using`aes()` function)
-4. Define the geometry of our plot. This specifies the type of plot we're making (use `geom_*()` to indicate the type of plot e.g: point, bar, etc.)
+```{r}
+#| fig-align: "center"
+#| fig-height: 3.5
 
-**Note**
-To add layers to our plot, for example, additional geometries/aesthetics and theme elements or any `ggplot` object we use `+`.
+ggplot(data = daily_visits_loc,
+       mapping = aes(x = restore_loc, y = daily_visits)) +
+  geom_col() + 
+  labs(title = 'Plot title')
+```
 
-:::
+::: callout-tip
+`data = <df>` and `mapping = aes()` can also live inside the `geom_*()` call — useful when layering multiple data sources!  But for simple plots, a good practice is to keep them in `ggplot()` for clarity.  The `data =` argument name is typically left out unless plot data are coming from multiple dataframes; the `mapping =` argument name is typically left out as well.
 
+**Variations on `data=` and `aes()`**:  Options 1 - 3 produce the same output as above.  Option 4 flips the axes.  Examine the code and the outputs.
 
-Now, let's plot total daily visits by restoration location. We will show this by creating the same plot in 3 slightly different ways. Each of the options below have the 4 essential pieces of a `ggplot`.
+:::: panel-tabset
+## Option 1 (original)
 
+Data and mapping defined in `ggplot()` function:
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
 
-```r
-## Option 1 - data and mapping called in the ggplot() function
 ggplot(data = daily_visits_loc,
        aes(x = restore_loc, y = daily_visits)) +
     geom_col()
+```
 
+## Option 2
 
-## Option 2 - data called in ggplot function; mapping called in geom
+Data defined in `ggplot()` function; mapping defined in `geom_*()`:
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
 ggplot(data = daily_visits_loc) +
-    geom_col(aes(x = restore_loc, y = daily_visits))
+    geom_col(aes(x = restore_loc, 
+                 y = daily_visits))
+```
 
+## Option 3
 
-## Option 3 - data and mapping called in geom
+Data and mapping both defined in `geom_*()`
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
 ggplot() +
     geom_col(data = daily_visits_loc,
              aes(x = restore_loc, y = daily_visits))
-
 ```
 
-They all will create the same plot:
+## Option 4 (axes flipped)
 
-(Apologies for the jumbled text on the x-axis, we will learn how to make this look better soon)
+Data and mapping both defined in `geom_*()`, but with x and y flipped.  Why might you prefer this?
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot() +
+    geom_col(data = daily_visits_loc,
+             aes(y = restore_loc, x = daily_visits))
+```
+
+:::: 
+<!-- end tabset -->
+:::
+<!-- end tip -->
+
+### Different Geometries for Different Plot Types
+
+Having the basic structure with the essential components in mind, we can easily change the type of graph by updating the `geom_*()`.  First let's filter the data to remove some extreme values, and to focus on boat users specifically.
+
+```{r}
+daily_boats_filtered <- daily_visits_loc %>%
+    filter(daily_visits < 30,
+           visitor_type %in% c("sm_boat", "med_boat", "lrg_boat"))
+```
+
+::: callout-tip
+## Piping directly into `ggplot()`
+
+Because `ggplot()` takes data as its first argument, you can pipe a data frame straight into it without creating an intermediate object:
 
 ```r
-ggplot(data = daily_visits_loc,
-       aes(x = restore_loc, y = daily_visits)) +
-    geom_col()
-```
-
-
-### Looking at different `geoms_*`
-
-Having the basic structure with the essential components in mind, we can easily change the type of graph by updating the `geom_*()`.
-
-
-::: callout-warning
-### `ggplot2` and the pipe operator
-
-Just like in `dplyr` and `tidyr`, we can also pipe a `data.frame` directly into the first argument of the `ggplot` function using the `%>%` operator.
-
-This can certainly be convenient, but use it carefully! Combining too many data-tidying or subsetting operations with your `ggplot` call can make your code more difficult to debug and understand.
-:::
-
-We will use the pipe operator to pass into `ggplot()` a filtered version of `daily_visits_loc`, and make a plot with different geometries.
-
-
-**Boxplot**
-_Note: These examples are to demonstrate case uses of wrangling function prior to plotting. They are not necessarily plotting best practices._
-
-```{r boxplot_ex}
 daily_visits_loc %>%
-    separate(date, c("year", "month", "day"), sep = "-") %>%
     filter(daily_visits < 30,
            visitor_type %in% c("sm_boat", "med_boat", "lrg_boat")) %>%
     ggplot(aes(x = visitor_type, y = daily_visits)) +
     geom_boxplot()
 ```
 
+This is handy for quick exploration, but use it carefully: chaining too many wrangling steps with a `ggplot()` call can make code harder to read and debug. A good rule of thumb: if the filter/transform is specific to *this plot*, pipe it in; if it would be useful elsewhere, save it to a named object first.
+:::
 
-**Violin plot**
+:::panel-tabset
 
+## Boxplot
+
+```{r boxplot_ex}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_boats_filtered, 
+       aes(x = visitor_type, y = daily_visits)) +
+    geom_boxplot()
+```
+
+
+## Violin Plot
+
+Note, axes flipped to make it easier to read the labels.
 ```{r violin_plot}
-daily_visits_loc %>%
-    separate(date, c("year", "month", "day"), sep = "-") %>%
-    filter(daily_visits < 30,
-           visitor_type %in% c("sm_boat", "med_boat", "lrg_boat")) %>%
-    ggplot(aes(x = visitor_type, y = daily_visits)) +
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_boats_filtered, 
+       aes(x = daily_visits, y = visitor_type)) +
     geom_violin()
 ```
 
 
-**Line and point**
 
+## Boxplot With Jitter
+
+Axes flipped, and all observations now plotted using `geom_jitter()`, which adds a small amount of random variation to the location of each point, to prevent overplotting.  Note the `geom_*()` functions have additional parameters to control appearance.
+```{r boxplot_w_jitter}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_boats_filtered, 
+       aes(x = daily_visits, y = visitor_type)) +
+    geom_boxplot() +
+    geom_jitter(height = .1)
+```
+
+
+## Scatterplot
+
+Note, new aesthetics: `color` is now mapped to `visitor_type`.  Note the legend!
 ```{r line_poin_plot}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_boats_filtered, 
+       aes(x = date, y = daily_visits)) +
+    geom_point(aes(color = visitor_type))
+```
+:::
+<!-- end tabset -->
 
-daily_visits_loc %>%
-    filter(restore_loc == "Decker Island",
-           visitor_type == "med_boat") %>%
-    ggplot(aes(x = date, y = daily_visits)) +
-    geom_line() +
-    geom_point()
+### The Grammar of Graphics
+
+The components above are entry points to a richer underlying framework called the **Grammar of Graphics**. A quick look at this framework will help you reason about what's possible, and what to change when plots don't look right.
+
+[Full Screen](slides/r_data_visualization/slides1_mapping_data_to_viz.html){.external target="_blank" rel="noopener"}
+
+```{=html}
+<iframe class="slide-deck" src="slides/r_data_visualization/slides1_mapping_data_to_viz.html" style="border: 1px   solid #2e3846;"></iframe>
 ```
 
+| Component | Role |
+|:---|:---|
+|**Aesthetic** (`aes()`) | Maps a data column to a visual property (`x`, `y`, `color`, `shape`, `fill`, ...) |
+| **Scale** | Translates raw data values into visual values (e.g., dates → pixel positions; species names → colors) |
+| **Guide** | Communicates the scale back to the viewer (axes and legends) |
+| **Geom** | The visual mark drawn for each observation (`geom_point()`, `geom_col()`, ...) |
+| **Stat** | Statistical transformation applied before drawing; `geom_point()` leaves data unchanged (`stat_identity`), while `geom_boxplot()` computes IQR and median automatically |
 
-### Customizing our plot
+You rarely call scale, guide, or stat functions directly; `ggplot2` picks sensible defaults. But knowing they exist explains why `geom_boxplot()` "just works" without you computing a median first, and gives you the vocabulary to find the right function when you want to override a default.
 
-Let's go back to our base bar graph. What if we want our bars to be blue instead of gray? You might think we could run this:
 
-```{r fill_blue}
+## Customize the Plot
 
-ggplot(data = daily_visits_loc,
-       aes(x = restore_loc, y = daily_visits,
-           fill = "blue")) +
-    geom_col()
-```
+We'll build our final bar chart in two focused steps: **labels & theme**, then **colors & ordering**.
 
-Why did that happen?
-
-Notice that we tried to set the fill color of the plot inside the mapping aesthetic call. What we have done, behind the scenes, is create a column filled with the word "blue" in our data frame, and then mapped it to the `fill` aesthetic, which then chose the default fill color, salmon. 
-
-What we really wanted to do was just change the color of the bars. If we want do do that, we can call the color option in the `geom_col()` function, **outside** of the mapping aesthetics function call.
-
-```{r fill_blue_geom}
-
-ggplot(data = daily_visits_loc,
-       aes(x = restore_loc, y = daily_visits)) +
-    geom_col(fill = "blue")
-
-```
-
-What if we did want to map the color of the bars to a variable, such as `visitor_type`. `ggplot()` is really powerful because we can easily get this plot to visualize more aspects of our data. 
-
-```{r}
-
-ggplot(data = daily_visits_loc,
-       aes(x = restore_loc, y = daily_visits,
-           fill = visitor_type)) +
-    geom_col()
-
-```
+### Set Labels, Axes, and Themes
 
 ::: {.callout-tip}
+## Inside vs. outside `aes()`
 
-### Keep in mind
+- **Inside `aes()`**: maps a *variable* to an aesthetic:  an aesthetic (e.g., `x`, `y`, `color`, `fill`...) changes for each element as the variable changes.  
+- **Outside `aes()`**: sets a *constant*: all elements get the same value for that aesthetic.
 
-- If you want to map a variable onto a graph aesthetic (e.g., point color should be based on a specific region), put it within `aes()`.
+::::panel-tabset
 
-- If you want to update your plot base with a constant  (e.g. “Make ALL the points BLUE”), you can add the information directly to the relevant `geom_` layer outside the `aes()` call.
+## Right: Set Fixed Color
+
+Set column `fill` and `color` to specific, valid colors outside `aes()`.  All bars are the same fill and outline color!
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(x = restore_loc, y = daily_visits)) +
+  geom_col(color = 'red',
+           fill = "steelblue")
+```
+
+## Right: Map Color to Variable
+
+Set column `fill` to map to a single variable, inside `aes()` (whether the result makes sense, that's on you).  Note, the `color = red` here is set **outside** the `aes()` so remains constant.
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(x = restore_loc, y = daily_visits)) +
+  geom_col(aes(fill = visitor_type),
+           color = 'red')
+```
+
+## Wrong! `aes(fill="blue")`
+
+Setting to a specific color **inside** the `aes()` function is incorrect.  This doesn't throw an error, but clearly does not reflect what you might be hoping for!  Note, the `color = red` here is set **outside** the `aes()` so remains constant (and correct!).
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(x = restore_loc, y = daily_visits, fill = "blue")) +
+  geom_col(color = 'red')
+```
+
+::::
+<!-- end tabset -->
+
+:::
+<!-- end callout -->
+
+
+To our basic bar chart, let's clean it up using some of the above ideas, and some new ones:
+
+* Map `fill` to track the `visitor_type`
+* flip the axes so location labels are readable
+* add informative labels
+* apply a clean theme
+
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
+  geom_col() +
+  labs(x = "Number of Visits",                                            # <1>
+       y = "Restoration Location",                                        # <1>
+       fill = "Visitor Type",                                             # <1>
+       title = "Total Visits to Delta Restoration Areas by Visitor Type", # <1>
+       subtitle = "Sum of all visits July 2017 - March 2018") +           # <1>
+  scale_x_continuous(breaks = seq(0, 120, 20), expand = c(0, 0)) +        # <2>
+  theme_minimal() +                                                       # <3>
+  theme(
+    legend.position = "bottom",                                           # <4>
+    axis.ticks.y = element_blank()                                        # <5>
+  )
+```
+1. `labs()` to rename axes, legend, title, subtitle, etc.
+2. `scale_x_continuous()` to set x-axis breaks & labels, and remove padding (expand)
+3. `theme_minimal()`, `theme_bw()`, and other built-in themes for a clean, publication-ready plot
+4. `theme()` to customize specific theme elements (e.g., legend position)
+5. `element_blank()` to effectively turn off any theme element
+
+:::callout-tip
+
+## Built-in and custom themes
+
+Always call `theme()` *after* built-in themes like `theme_minimal()`, or the built-in theme will override your tweaks. 
+
+You can also create your own custom theme object to reuse across plots, just as you would a built-in theme - just wrap your theme choices in a function!
+```r
+my_theme <- function(size = 14) {
+    theme_minimal(base_size = size) +
+    theme(legend.position = "bottom", 
+          axis.ticks.y = element_line(color = "red", size = 0.5))
+}
+```
+:::
+
+### Position Adjustments
+
+Notice the bar chart above stacks bars for each `visitor_type` on top of one another. This is controlled by the `position` argument of `geom_col()`, which defaults to `"stack"`. Three positions are useful for grouped categorical data:
+
+:::panel-tabset
+
+## Stacked (default)
+
+Each group is stacked; total bar length shows the overall sum.
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
+  geom_col(position = "stack") +
+  labs(x = "Number of Visits", y = "Restoration Location", fill = "Visitor Type") +
+  theme_minimal() + theme(legend.position = "bottom")
+```
+
+## Dodged
+
+Each group is placed side-by-side; easier to compare within a location.
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
+  geom_col(position = "dodge") +
+  labs(x = "Number of Visits", y = "Restoration Location", fill = "Visitor Type") +
+  theme_minimal() + theme(legend.position = "bottom")
+```
+
+## Filled
+
+Each bar is scaled to 100%; shows proportions rather than totals.
+```{r}
+#| out-width: "80%"
+#| fig-align: "center"
+#| fig-height: 3.5
+ggplot(data = daily_visits_loc,
+       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
+  geom_col(position = "fill") +
+  labs(x = "Proportion of Visits", y = "Restoration Location", fill = "Visitor Type") +
+  theme_minimal() + theme(legend.position = "bottom")
+```
+
+:::
+
+### Order Categorical Values and Add Color
+
+For categorical variables (e.g., text), `ggplot2` defaults to displaying values in alphabetical order (see the plots above). We can use factors (ordered vectors of categorical values) to force a particular display order.  One easy approach is to use `forcats::fct_reorder()` from `forcats` to sort by a meaningful variable instead (the `levels` of a factor determine the order of values).
+
+```{r}
+daily_visits_totals <- daily_visits_loc %>%
+  group_by(restore_loc) %>%
+  mutate(total = sum(daily_visits)) %>%
+  ungroup() %>%
+  mutate(restore_loc = fct_reorder(restore_loc, desc(total)))
+
+unique(daily_visits_totals$restore_loc)
+```
+
+Note that `fct_reorder()` defaults to sorting in ascending order, so the location with the lowest total visits will be at the bottom of the plot.  To reverse this, add `desc()` around the variable you are sorting by: `fct_reorder(restore_loc, desc(total))`.  Note how `Prospect` is the first `level` of the factor, and has the highest total visits.
+
+Default colors in `ggplot2` are not the most appealing, and not ideal for accessibility.  There are many options available, and colors in ggplot could be an entire topic in itself.  Here are some quick tips:
+
+::: panel-tabset
+## Color Scales
+
+Use `scale_color_*()` or `scale_fill_*()` to select or modify color palettes.  Good choices:
+
+* `scale_color_viridis_c/d()`: {{< fa thumbs-up >}} {{< fa thumbs-up >}} Colorblind-friendly, perceptually uniform (`c`ontinuous or `d`iscrete)
+* `scale_color_brewer()`: [ColorBrewer](https://colorbrewer2.org/) palettes (categorical, sequential, diverging)
+* `scale_color_gradient()`: Custom two-color gradient
+* `scale_color_gradient2()`: Diverging gradient with midpoint
+* `scale_color_manual()`: Fully custom discrete colors
+
+## Color Name vs Code
+
+You can use either color names (e.g., "steelblue", "salmon", "orchid") or hex codes (e.g., "#4682B4", "#FA8072", "#DA70D6") to specify colors in R.  Hex codes are more precise and allow for a wider range of colors, but color names can be easier to remember and read in code. 
+
+Use `colors()` to see all available color names in R, or [check out this cheat sheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf).
+
+## Alpha
+
+Use the `alpha` argument to set transparency, which can help with overplotting.  For example, `geom_point(alpha = 0.5)` will make points semi-transparent.
 
 :::
 
 
-#### Setting `ggplot` themes
-
-
-We have successfully plotted our data. But, this is clearly not a nice plot. Let's work on making this plot look a bit nicer. We are going to:
-
-- Add a title, subtitle and adjust labels using `labs()`
-- Flip the x and y axis to make it a sideways column plot and make the labels easier to read
-- Include a built in theme using `theme_bw()`
-
-
-```{r theme_bw_plot}
-
-ggplot(data = daily_visits_loc,
-       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during July 2017 and March 2018") +
-    theme_bw()
-    
-    
-```
-
-You can see that the `theme_bw()` function changed a lot of the aspects of our plot! The background is white, the grid is a different color, etc. There are lots of other built in themes like this that come with the `ggplot2` package that help quickly set the look of the plot. Use the RStudio auto-complete `theme_` `<TAB>` to view a list of theme functions.
-
+Let's plot our daily visits data, with the locations ordered by total visits (from `fct_reorder()` above), and colored by visitor type.  We'll add a colorblind-friendly palette with `scale_fill_viridis_d()`.
 
 ```{r}
-#| code-summary: "Themes"
-#| eval: false
+my_theme <- function(base_size = 14) {
+    theme_minimal(base_size = base_size) +
+    theme(legend.position = "bottom", 
+          panel.grid.major = element_line(color = 'slateblue1'))
+}
 
-## Useful baseline themes are
-theme_minimal()
-theme_light()
-theme_classic()
-```
-
-
-
-The built in theme functions (`theme_*()`) change the default settings for many elements that can also be changed individually using the`theme()` function. The `theme()` function is a way to further fine-tune the look of your plot. This function takes MANY arguments (just have a look at `?theme`). Luckily there are many great `ggplot` resources online so we don't have to remember all of these, just Google ["ggplot cheat sheet"](https://www.google.com/search?q=ggplot+cheat+sheet&rlz=1C5CHFA_enUS989US989&oq=ggplot+chea&aqs=chrome.0.0i433i512j69i57j0i512l2j0i22i30i395l2.1681j1j7&sourceid=chrome&ie=UTF-8) and find one you like.
-
-Let's look at an example of a `theme()` call, where we change the position of the legend from the right side to the bottom, and remove the ticks of our Locations axis.
-
-```{r}
-ggplot(data = daily_visits_loc,
+ggplot(data = daily_visits_totals,
        aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    theme_bw() +
-    theme(legend.position = "bottom",
-          axis.ticks.y = element_blank()) 
-    
+  geom_col() +
+  scale_fill_viridis_d() +
+  scale_x_continuous(breaks = seq(0, 120, 20), expand = c(0, 0)) +
+  labs(
+    x = "Number of Visits",
+    y = "Restoration Location",
+    fill = "Visitor Type",
+    title = "Total Visits to Delta Restoration Areas by Visitor Type",
+    subtitle = "Sum of all visits during the study period"
+  ) +
+  my_theme()
 ```
 
 
-Note that the `theme()` call needs to come after any built-in themes like `theme_bw()` are used. Otherwise, `theme_bw()` will likely override any theme elements that you changed using `theme()`.
+:::callout-exercise
+Why is the longest bar at the bottom? It might make more sense to put the longest bar on top - how could we do that?
 
-
-You can also save the result of a series of `theme()` function calls to an object to use on multiple plots. This prevents needing to copy paste the same lines over and over again!
-
-```{r save_theme}
-my_theme <- theme_bw(base_size = 16) +
-    theme(legend.position = "bottom",
-          axis.ticks.y = element_blank())
-```
-
-So now our code will look like this:
-
-
-```{r}
-ggplot(data = daily_visits_loc,
-       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    my_theme
-
-```
-
-
-::: {.callout-exercise}
-
-What changes do you expect to see in your plot by adding the following line of code? Discuss with your neighbor and then try it out!
-
-`scale_x_continuous(breaks = seq(0,120, 20))`
-
-::: {.callout-answer}
-```{r}
-ggplot(data = daily_visits_loc,
-       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    scale_x_continuous(breaks = seq(0,120, 20)) +
-    my_theme
-```
+::::{.callout-answer}
+The y axis starts with the lowest value on the bottom, and here the "lowest" value is the first factor level (which corresponds to the *highest* total visits as we defined it in an earlier code block). To put the longest bar on top, we can reverse the order of the factor levels in `restore_loc` using `forcats::fct_reorder()` and removing the `desc()` wrapper we included earlier.
+::::
 :::
 
-
-
-
-Finally we are going to expand the bars all the way to the axis line. In other words, remove the gap between the bars and the vertical "x-axis" line.
-
-```{r}
-ggplot(data = daily_visits_loc,
-       aes(y = restore_loc, x = daily_visits, fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    scale_x_continuous(breaks = seq(0,120, 20), expand = c(0,0)) +
-    my_theme
-
-```
-
-
-
-#### Reordering things
-
-`ggplot()` loves putting things in alphabetical order. But more frequently than not, that's not the order you actually want things to be plotted. One way to do this is to use the `fct_reorder()` function from the `forcats` package. `forcats` provides tools for working with categorical variables. In this case, we want to reorder our categorical variable of `restore_loc` based on the total number of visits.
-
-The first thing we need to do is to add a column to our data with the _total number of visits_ by location. This will be our "sorting" variable.  Then we use `fct_reorder()` to reorder the `restore_loc` variable according to our sorting variable.
-
-```{r}
-daily_visits_totals <- daily_visits_loc %>% 
-    group_by(restore_loc) %>%
-    mutate(n = sum(daily_visits)) %>% 
-    ungroup() %>%
-    mutate(restore_loc = fct_reorder(restore_loc, n))
-
-head(daily_visits_totals)
-levels(daily_visits_totals$restore_loc) ### not alphabetical any more!
-```
-
-Next, we will run the code for our plot adding the `fct_reorder()` function.
-
-```{r}
-ggplot(data = daily_visits_totals,
-       aes(x = daily_visits, y = restore_loc,
-           fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    scale_x_continuous(breaks = seq(0,120, 20), expand = c(0,0)) +
-    my_theme
-
-```
-
-What if you want to plot the other way around? In this case from least to greater? We add the `desc()` to the variable we are sorting by.
-
-```{r}
-daily_visits_totals <- daily_visits_loc %>% 
-    group_by(restore_loc) %>%
-    mutate(n = sum(daily_visits)) %>% 
-    ungroup() %>%
-    mutate(restore_loc = fct_reorder(restore_loc, desc(n)))
-
-ggplot(data = daily_visits_totals,
-       aes(x = daily_visits, y = restore_loc,
-           fill = visitor_type)) +
-    geom_col() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    scale_x_continuous(breaks = seq(0,120, 20), expand = c(0,0)) +
-    my_theme
-```
-
-
-#### Colors
-
-The last thing we will do to our plot is change the color. To do this we are going to use a function from the `viridis` package. This package provides different color palettes that are designed to improve graph readability for readers with common forms of color blindness and/or color vision deficiency. With `viridis`, there are multiple other color palette packages or color palettes out there that you can use to customize your graphs. We could spend a whole session talking about colors in R! For the purpose of this lesson we are just going to keep it brief and show one function of the `viridis` package that will make our plot colors look better.
-
-```{r}
-
-ggplot(data = daily_visits_totals,
-       aes(x = daily_visits, y = restore_loc,
-           fill = visitor_type)) +
-    geom_col() +
-    scale_fill_viridis_d() +
-    labs(x = "Number of Visits",
-         y = "Restoration Location",
-         fill = "Type of Visitor",
-         title = "Total Number of Visits to Delta Restoration Areas by visitor type",
-         subtitle = "Sum of all visits during study period") +
-    scale_x_continuous(breaks = seq(0,120, 20), expand = c(0,0)) +
-    my_theme
-
-
-```
-
-Things to keep in mind when choosing a color palette are the number of variables you have and how many colors your palette has. And if you need a discrete or a continuous color palette. Find more information about colors in this [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf). 
-
-
-#### Saving plots
-
-Saving plots using `ggplot` is easy! The `ggsave()` function will save either the last plot you created, or any plot that you have saved to an object. You can specify what output format you want, size, resolution, etc. See `?ggsave()` for documentation.
-
-For example, if we want to save our current plot to an existing folder named "figures", we can do this:
+### Save Your Plot
 
 ```r
 ggsave("figures/visit_restore_site_delta.jpg", width = 12, height = 6, units = "in")
 ```
 
+* By default, `ggsave()` saves the last plot displayed, or you can pass `plot = my_object` to save a specific plot object.  
+* Set `width`, `height`, and `units` to control the size of the output file.  
+* By default, `ggsave()` guesses the output format from the file extension (e.g., `.jpg`, `.png`, `.pdf`).  See `?ggsave()` for more options.
 
 
-#### Creating multiple plots
+## Create "Small Multiple" Plots
 
-An easy way to plot another aspect of your data is using the function `facet_wrap()`. This function takes a mapping to a variable using the syntax `~{variable_name}`. The `~` (tilde) is a model operator which tells `facet_wrap()` to model each unique value within `variable_name` to a facet in the plot.
+Plotting multiple lines or bars on a plot can convey a lot of information, but can also appear rather cluttered.  Alternately, you can plot subsets or closely related variables using `facet_wrap()` in ["small multiples"](https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples).  Each unique value of a (usually categorical) variable is mapped to its own mini panel using the syntax `facet_wrap(~ <variable_name>)`.
 
-The default behavior of facet wrap is to put all facets on the same x and y scale. You can use the `scales` argument to specify whether to allow different scales between facet plots (e.g `scales = "free_y"` to free the y axis scale). You can also specify the number of columns using the `ncol = ` argument or number of rows using `nrow =`.
+The default behavior puts all facets on the same x and y scale. Use the `scales` argument to allow different scales between facet plots (e.g. `scales = "free_y"` to let the y axis scale vary from facet to facet). Specify the number of columns using the `ncol = ` argument or number of rows using `nrow =`.
 
+See also `facet_grid()` for faceting by two variables.
 
 ```{r}
 facet_plot <- ggplot(data = daily_visits_totals,
@@ -583,26 +645,33 @@ facet_plot <- ggplot(data = daily_visits_totals,
            fill = visitor_type)) +
     geom_col() +
     facet_wrap(~restore_loc,
-               scales = "free_y",
-               ncol = 5,
-               nrow = 2) +
+               scales = "free_y", # <1>
+               ncol   = 5,
+               nrow   = 2) +
     scale_fill_viridis_d() +
-    labs(x = "Type of visitor",
-         y = "Number of Visits",
-         title = "Total Number of Visits to Delta Restoration Areas",
+    labs(x        = "Type of visitor", # <1>
+         y        = "Number of Visits",
+         title    = "Total Number of Visits to Delta Restoration Areas",
          subtitle = "Sum of all visits during study period") +
     theme_bw() +
-    theme(legend.position = "bottom",
-          axis.ticks.x = element_blank(),
-          axis.text.x = element_blank())
+    theme(legend.position = "bottom", # <1>
+          axis.ticks.x    = element_blank(),
+          axis.text.x     = element_blank())
 
 facet_plot
 ```
+1. See tip below about spacing of multiple arguments!
 
-We can save this plot to our figures folder too. Note that this time we are specifically mentioning the object we want to save.
+:::callout-tip
+In the example above, we added extra spaces so that the `=` equals signs line up when assigning values to multiple different arguments.  R doesn't care about spacing or indents, so **this does not change any functionality**.  This is purely aesthetic, but lining up the equals signs may make the assigned values a little easier to scan quickly!
+:::
+
+Save this plot to your figures folder.  
 
 ```r
-ggsave("figures/visit_restore_site_facet.jpg", plot = facet_plot, width = 12, height = 8, units = "in")
+ggsave(here("figures/visit_restore_site_facet.jpg"), 
+       plot = facet_plot, 
+       width = 12, height = 8, units = "in")
 
 ```
 
@@ -613,34 +682,20 @@ Fixing tick labels in `ggplot` can be super annoying. The y-axis labels in the p
 
 The `scales` package provides some nice helper functions to easily rescale and relabel your plots. Here, we use `scale_y_continuous()` from `ggplot2`, with the argument `labels`, which is assigned to the function name `comma`, from the `scales` package. This will format all of the labels on the y-axis of our plot with comma-formatted numbers.-->
 
+## Interactive Plots with `plotly`
 
-## Interactive visualization
+Most of the time, we will render our Quarto documents as .html files, which means we can include interactive elements in our documents.  The `plotly` package provides a simple way to convert your static `ggplot2` plots into interactive plots that a user can hover over, zoom in on, etc. 
 
-### Tables with `DT`
+We already created a plot object above and stored it as the object `facet_plot`.  To make this interactive, we can simply wrap it in `ggplotly()`:
 
-Now that we know how to make great static visualizations, let's introduce two other packages that allow us to display our data in interactive ways. These packages really shine when used with GitHub Pages, so at the end of this lesson we will publish our figures to the website we created earlier.
-
-First let's show an interactive table of unique sampling locations using `DT`.
-We will start by creating a `data.frame` containing unique sampling locations.
-
-```{r uniq_locations}
-locations <- visits_long %>%
-    distinct(restore_loc, .keep_all = T) %>%
-    select(restore_loc, latitude, longitude)
-
-head(locations)
+```{r}
+ggplotly(facet_plot, tooltip = c('x', 'y'))
 ```
 
-The `dplyr::distinct()` function comes pretty handy when you want to filter unique values in a column. In this case we use the `.keep_all = T` argument to keep all the columns of our data frame so we can have the `latitude` and `longitude` of each of the locations. If we don't add this argument, we would end up with a data frame with only one column: `restore_loc` and 10 rows, one for each of the unique locations.
+Note that any variable assigned to an aesthetic in the original `ggplot` (e.g., `x`, `y`, `color`, `fill`, etc.) will be included in the hover information in the interactive plot, by default.  You can customize this further using the `tooltip` argument in `ggplotly()` - for example, here we only included the `x` and `y` variables (since `x` and `fill` are both `visitor_type`, we we don't need to see it twice).  See `?ggplotly` for more options.
 
 
-Now we can display this table as an interactive table using `datatable()` from the `DT` package.
-
-```{r display_locations}
-datatable(locations)
-```
-
-### Maps with `leaflet`
+<!-- ### Maps with `leaflet`
 
 The `leaflet()` package allows you to make basic interactive maps using just a couple lines of code. Note that unlike `ggplot2`, the `leaflet` package uses pipe operators (`%>%`) and not the additive operator (`+`).
 
@@ -648,6 +703,8 @@ The `addTiles()` function without arguments will add base tiles to your map from
 
 
 ```{r simple_map}
+#| include: false
+#| eval: false
 
 leaflet(locations) %>%
     addTiles() %>%
@@ -664,7 +721,8 @@ You can also use `leaflet` to import Web Map Service (WMS) tiles. For example, w
 
 
 ```{r}
-
+#| include: false
+#| eval: false
 leaflet(locations) %>%
     addWMSTiles(
         "https://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WmsServer",
@@ -679,7 +737,7 @@ leaflet(locations) %>%
         fillColor = "salmon",
         fillOpacity = 1,
         # set stroke properties
-        stroke = T,
+        stroke = TRUE,
         weight = 0.5,
         color = "white",
         opacity = 1)
@@ -691,6 +749,8 @@ leaflet(locations) %>%
 We can also layer base maps. In this case the USGSImageryTopo base map with the USGSHydroCached base map. Note that the url where the map is retrieved is very similar for each USGS base map.
  
 ```{r}
+#| include: false
+#| eval: false
 
 leaflet(locations) %>%
     addWMSTiles(
@@ -710,7 +770,7 @@ leaflet(locations) %>%
         fillColor = "salmon",
         fillOpacity = 1,
         # set stroke properties
-        stroke = T,
+        stroke = TRUE,
         weight = 0.5,
         color = "white",
         opacity = 1)
@@ -721,10 +781,10 @@ leaflet(locations) %>%
 
 <br>
 
-Leaflet has a ton of functionality that can enable you to create some beautiful, functional maps with relative ease. [Here](https://pages.github.nceas.ucsb.edu/NCEAS/sasap-data/language_vis.html) is an example of some we created as part of the [State of Alaskan Salmon and People (SASAP) project](https://www.nceas.ucsb.edu/workinggroups/state-alaskan-salmon-and-people-sasap), created using the same tools we showed you here. This map hopefully gives you an idea of how powerful the combination of Quarto or RMarkdown and GitHub Pages can be. 
+Leaflet has a ton of functionality that can enable you to create some beautiful, functional maps with relative ease. [Here](https://pages.github.nceas.ucsb.edu/NCEAS/sasap-data/language_vis.html) is an example of some we created as part of the [State of Alaskan Salmon and People (SASAP) project](https://www.nceas.ucsb.edu/workinggroups/state-alaskan-salmon-and-people-sasap), created using the same tools we showed you here. This map hopefully gives you an idea of how powerful the combination of Quarto or RMarkdown and GitHub Pages can be.  -->
 
 
-## Publish the Data Visualization lesson to your webpage
+<!-- ## Publish the Data Visualization lesson to your webpage
 
 ::: callout-tip
 ### Steps
@@ -735,11 +795,12 @@ Leaflet has a ton of functionality that can enable you to create some beautiful,
 4. Save and render `index.qmd` to an `html`.
 5. Use the `Git` workflow: ```Stage > Commit > Pull > Push```
 
-:::
+::: -->
 
 ## `ggplot2` Resources
 
-- [Why not to use two axes, and what to use instead: The case against dual axis charts](https://blog.datawrapper.de/dualaxis/) by Lisa Charlotte Rost.
-- [Customized Data Visualization in `ggplot2`](https://allisonhorst.github.io/eds221-day8-comp/data_viz.html#3_ggplot2_Basics_Review) by Allison Horst.
-- [A `ggplot2` tutorial for beautiful plotting in R](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#legends) by Cedric Scherer.
+- [R Graph Gallery](https://www.r-graph-gallery.com/) by Yan Holtz - a gallery of beautiful plots for inspiration, with code examples.
+- [A `ggplot2` tutorial for beautiful plotting in R](https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/#legends) by Cedric Scherer - a comprehensive tutorial on `ggplot2` with lots of examples and tips for customizing your plots.
+- [Modify components of a theme](https://ggplot2.tidyverse.org/reference/theme.html) in `ggplot2` documentation - an excellent resource for all the theme items you can customize.
+- [Why not to use two axes, and what to use instead: The case against dual axis charts](https://blog.datawrapper.de/dualaxis/) by Lisa Charlotte Rost - a thoughtful post about how to think about displaying multiple datasets simultaneously.
 

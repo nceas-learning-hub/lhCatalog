@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Covers the Data Life Cycle, strategies for finding and inventorying data, data management planning, metadata best practices, and accessing data via the Box API.">
+
+<title>Data Management &amp; Data Discovery – Learning Hub Lessons Catalog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../_extensions/nceas-learning-hub/theme/banner/logo_lh_hex.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a295ad415f53c92ed3c0baa5ae267f41.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-04d35828442bc8f9a3bcb4b37829e7a4.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: #44444444;
+      }
+</style>
+
+
+<link rel="stylesheet" href="../_extensions/nceas-learning-hub/theme/banner/banner.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learning Hub Lessons Catalog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-instructors" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Instructors</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-instructors">    
+        <li>
+    <a class="dropdown-item" href="https://www.oharascience.com/">
+ <span class="dropdown-text">Casey O’Hara</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/nceas-learning-hub/lhCatalog"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Data Management &amp; Data Discovery</h1>
+                  <div>
+        <div class="description">
+          Covers the Data Life Cycle, strategies for finding and inventorying data, data management planning, metadata best practices, and accessing data via the Box API.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">data-management</div>
+                <div class="quarto-category">reproducibility</div>
+                <div class="quarto-category">apis</div>
+                <div class="quarto-category">lecture</div>
+                <div class="quarto-category">intermediate</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-big-idea" id="toc-the-big-idea" class="nav-link active" data-scroll-target="#the-big-idea"><span class="header-section-number">1</span> The Big Idea</a></li>
+  <li><a href="#the-data-life-cycle" id="toc-the-data-life-cycle" class="nav-link" data-scroll-target="#the-data-life-cycle"><span class="header-section-number">2</span> The Data Life Cycle</a></li>
+  <li><a href="#data-workflows" id="toc-data-workflows" class="nav-link" data-scroll-target="#data-workflows"><span class="header-section-number">3</span> Data Workflows</a></li>
+  <li><a href="#finding-data" id="toc-finding-data" class="nav-link" data-scroll-target="#finding-data"><span class="header-section-number">4</span> Finding Data</a>
+  <ul class="collapse">
+  <li><a href="#useful-data-repositories" id="toc-useful-data-repositories" class="nav-link" data-scroll-target="#useful-data-repositories"><span class="header-section-number">4.1</span> Useful Data Repositories</a></li>
+  <li><a href="#general-data-searches" id="toc-general-data-searches" class="nav-link" data-scroll-target="#general-data-searches"><span class="header-section-number">4.2</span> General Data Searches</a></li>
+  <li><a href="#search-operators" id="toc-search-operators" class="nav-link" data-scroll-target="#search-operators"><span class="header-section-number">4.3</span> Search Operators</a></li>
+  </ul></li>
+  <li><a href="#making-a-data-inventory" id="toc-making-a-data-inventory" class="nav-link" data-scroll-target="#making-a-data-inventory"><span class="header-section-number">5</span> Making a Data Inventory</a></li>
+  <li><a href="#managing-your-data" id="toc-managing-your-data" class="nav-link" data-scroll-target="#managing-your-data"><span class="header-section-number">6</span> Managing Your Data</a>
+  <ul class="collapse">
+  <li><a href="#why-manage-your-data" id="toc-why-manage-your-data" class="nav-link" data-scroll-target="#why-manage-your-data"><span class="header-section-number">6.1</span> Why Manage Your Data?</a></li>
+  <li><a href="#tools-to-manage-your-data" id="toc-tools-to-manage-your-data" class="nav-link" data-scroll-target="#tools-to-manage-your-data"><span class="header-section-number">6.2</span> Tools to Manage your Data</a></li>
+  <li><a href="#how-to-plan" id="toc-how-to-plan" class="nav-link" data-scroll-target="#how-to-plan"><span class="header-section-number">6.3</span> How to Plan</a></li>
+  </ul></li>
+  <li><a href="#metadata-best-practices" id="toc-metadata-best-practices" class="nav-link" data-scroll-target="#metadata-best-practices"><span class="header-section-number">7</span> Metadata Best Practices</a></li>
+  <li><a href="#data-sharing-preservation" id="toc-data-sharing-preservation" class="nav-link" data-scroll-target="#data-sharing-preservation"><span class="header-section-number">8</span> Data Sharing &amp; Preservation</a>
+  <ul class="collapse">
+  <li><a href="#data-packages" id="toc-data-packages" class="nav-link" data-scroll-target="#data-packages"><span class="header-section-number">8.1</span> Data Packages</a></li>
+  </ul></li>
+  <li><a href="#bonus-load-data-from-box-into-r" id="toc-bonus-load-data-from-box-into-r" class="nav-link" data-scroll-target="#bonus-load-data-from-box-into-r"><span class="header-section-number">9</span> Bonus: Load data from Box into R</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<div class="callout callout-style-default callout-learning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-learning">
+<p>After completing this session, you will be able to:</p>
+<ul>
+<li>Explain why managing data from the start of a project is important during and after a synthesis project</li>
+<li>Discuss some best practices for reproducibility</li>
+<li>Identify repositories “known for” a particular type of data</li>
+<li>Explain how to effectively search for data outside of specialized repositories</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Acknowledgments
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The “Finding Data” section in this page was adapted from the Long Term Ecological Research (LTER) Network’s course “Synthesis Skills for Early Career Researchers” (SSECR). Those materials can be found at <a href="https://lter.github.io/ssecr/">lter.github.io/ssecr</a></p>
+</div>
+</div>
+<section id="the-big-idea" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="the-big-idea"><span class="header-section-number">1</span> The Big Idea</h2>
+<p>The ultimate goal of this lesson is to provide an overview of a reproducible open science framework for your research, applicable both when you are accessing published data as a <em>data user</em> – for example, to use it for synthesis – and when you want to publish your own data as a <em>data author</em>. To achieve this, we are going to talk about the following topics.</p>
+<ul>
+<li>The Data Life Cycle</li>
+<li>The importance of data management</li>
+<li>Metadata best practices</li>
+<li>Data preservation</li>
+</ul>
+<p>We will discuss how these topics relate to each other and why they are the building block for you to use others’ data and for others to access, interpret, and use your data in the future.</p>
+</section>
+<section id="the-data-life-cycle" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="the-data-life-cycle"><span class="header-section-number">2</span> The Data Life Cycle</h2>
+<p>The Data Life Cycle gives you an overview of meaningful steps in a research project. This step-by-step breakdown facilitates successful management and preservation of data throughout a project. Some research activities might use only part of the life cycle. For example, a meta-analysis might focus on the Discover, Integrate, and Analyze steps, while a project focused on primary data collection and analysis might bypass the Discover and Integrate steps.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://dataoneorg.github.io/Education/bestpractices/"><img src="images/lecture_data_mgmt_discovery/data-life-cycle.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Data Life Cycle graphic with each stage following the next to create a circle."></a></p>
+</figure>
+</div>
+<figcaption>Source: DataONE</figcaption>
+</figure>
+</div>
+<p>The first step to working with data is identifying where your project is starting in the Data Life Cycle. Using the data life cycle stages, create your own cycle that best fits your project needs.</p>
+<p><strong>A way to use the Data Life Cycle in practice is to:</strong></p>
+<ul>
+<li>Think about the end goal, outcomes, and products of your project</li>
+<li>Think and decide steps in the Data Life Cycle you need to include in your project</li>
+<li>Review <a href="https://dataoneorg.github.io/Education/bestpractices/">DataONE’s best practices</a> for that step in the cycle and start outlining action items in each of those steps.</li>
+</ul>
+<p>DataONE’s <a href="https://dataoneorg.github.io/Education/bestpractices/">Data Management Skillbuilding Hub</a> offers several best practices on how to effectively work with your data throughout all stages of the data life cycle.</p>
+<p>No matter how your data life cycle looks like, <em>Plan</em> should be at the top of the cycle. It is advisable to initiate your data management planning at the beginning of your research process before any data has been collected or discovered. The following section will discuss more in-depth data management and how to plan accordingly</p>
+</section>
+<section id="data-workflows" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="data-workflows"><span class="header-section-number">3</span> Data Workflows</h2>
+<p>Whereas the Data Life Cycle provides a strategic perspective on how to manage data over its full lifespan, a Data Workflow focuses on the operational process of acquiring data in some raw state, transforming it via a series of steps, and ultimately producing one or more derived research products. The diagram below depicts a generalized workflow that tends to be applicable to most projects involving data, although each project is unique in terms of the details underlying each step.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/lecture_data_mgmt_discovery/data-workflow.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Adapted from Faundeen et al., 2013 and DataONE"><img src="images/lecture_data_mgmt_discovery/data-workflow.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Data workflow graphic with each stage following the next to form a pipeline"></a></p>
+</figure>
+</div>
+<figcaption>Adapted from <a href="https://pubs.usgs.gov/of/2013/1265/pdf/of2013-1265.pdf">Faundeen et al., 2013</a> and DataONE</figcaption>
+</figure>
+</div>
+<p>In the ideal case, this workflow can be fully automated, from the acquisition of raw data to the production of derived outputs (including analytical results, model predictions, visualizations, and more). Imagine being able to run this on-demand as a repeatable process, effectively enabling a pipeline in which data is “moved” from its starting point through a series of transformations performed by executable code, yielding whatever final outputs are desired. In practice, we often can’t achieve full automation, but our goal should be to come as close as we can.</p>
+<p>Across the entire workflow, three additional elements are key to ensuring that the pipeline is robust, reliable, and repeatable:</p>
+<ul>
+<li><strong>Describe</strong>: Thorough documentation and metadata detailing each step, and its inputs and outputs; well-written and documented code itself is hugely beneficial!</li>
+<li><strong>Manage Quality</strong>: Use well-vetted tools and technology, and build validation steps into the process.</li>
+<li><strong>Backup and Secure</strong>: Adopt practices and services that provide redundant storage and version control, with sufficient assurances around data integrity and security.</li>
+</ul>
+</section>
+<section id="finding-data" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="finding-data"><span class="header-section-number">4</span> Finding Data</h2>
+<section id="useful-data-repositories" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="useful-data-repositories"><span class="header-section-number">4.1</span> Useful Data Repositories</h3>
+<p>There are <em>a lot</em> of specialized data repositories out there. These organizations are either primarily dedicated to storing and managing data or those operations constitute a substantive proportion of their efforts. In synthesis work, you may already have some datasets in-hand at the outset but it likely that <strong>you will need to find more data to test your hypotheses</strong>. Data repositories are a great way of finding/accessing data that are relevant to your questions.</p>
+<p>You’ll become familiar with many of these when you need a particular type of data and go searching for it but to help speed you along, see the list below for a non-exhaustive set of some that have proved useful to other synthesis projects in the past. They are in alphabetical order. If the “<i class="fa-brands fa-r-project" aria-label="r-project"></i> Package” column contains the GitHub logo (<i class="fa-brands fa-github" aria-label="github"></i>) then the package is available on GitHub but is not available on CRAN (or not available at time of writing).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Name</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: center;"><i class="fa-brands fa-r-project" aria-label="r-project"></i> <strong>Package</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://ameriflux.lbl.gov/data/data-policy/">AmeriFlux</a></td>
+<td style="text-align: left;">Provides data on carbon, water, and energy fluxes in ecosystems across the Americas, aiding in climate change and carbon cycle research.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/amerifluxr/index.html"><code>amerifluxr</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://www.dataone.org/">DataONE</a></td>
+<td style="text-align: left;">Aggregates environmental and ecological data from global sources, focusing on biodiversity, climate, and ecosystem research.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/dataone/index.html"><code>dataone</code></a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://edirepository.org/">EDI</a></td>
+<td style="text-align: left;">Contains a wide range of ecological and environmental datasets, including long-term observational data, experimental results, and field studies from diverse ecosystems.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/EDIutils/index.html"><code>EDIutils</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://ess-dive.lbl.gov/">EES-DIVE</a></td>
+<td style="text-align: left;">The Environmental System Science Data Infrastructure for a Virtual Ecosystem (ESS-DIVE) includes a variety of observational, experimental, modeling and other data products from a wide range of ecological and urban systems.</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://www.gbif.org/">GBIF</a></td>
+<td style="text-align: left;">The Global Biodiversity Information Facility (GBIF) aggregates global species occurrence data and biodiversity records, supporting research in species distribution and conservation.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/rgbif/index.html"><code>rgbif</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://earthengine.google.com/">Google Earth Engine</a></td>
+<td style="text-align: left;">Google Earth Engine is a cloud-based geospatial analysis platform that provides access to vast amounts of satellite imagery and environmental data for monitoring and understanding changes in the Earth’s surface.</td>
+<td style="text-align: center;"><i class="fa-brands fa-github" aria-label="github"></i> <a href="https://github.com/r-spatial/rgee"><code>rgee</code></a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://planetarycomputer.microsoft.com/">Microsoft Planetary Computer</a></td>
+<td style="text-align: left;">The Microsoft Planetary Computer is a cloud-based platform that combines global environmental datasets with advanced analytical tools to support sustainability and ecological research.</td>
+<td style="text-align: center;"><i class="fa-brands fa-github" aria-label="github"></i> <a href="https://github.com/brazil-data-cube/rstac"><code>rstac</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://data.nasa.gov/">NASA</a></td>
+<td style="text-align: left;">Provides data on earth science, space exploration, and climate, including satellite imagery and observational data for both terrestrial and extraterrestrial studies. Nice GUI-based data download via <a href="https://appeears.earthdatacloud.nasa.gov/">AppEEARS</a>.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/nasadata/index.html"><code>nasadata</code></a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://www.ncbi.nlm.nih.gov/">NCBI</a></td>
+<td style="text-align: left;">Hosts genomic and biological data, including DNA, RNA, and protein sequences, supporting genomics and molecular biology research.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/rentrez/index.html"><code>rentrez</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://data.neonscience.org/">NEON</a></td>
+<td style="text-align: left;">Provides ecological data from U.S. field sites, covering biodiversity, ecosystems, and environmental changes, supporting large-scale ecological research.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/neonUtilities/index.html"><code>neonUtilities</code></a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://data.noaa.gov/onestop/">NOAA</a></td>
+<td style="text-align: left;">Offers meteorological, oceanographic, and climate data, essential for understanding atmospheric conditions, marine environments, and long-term climate trends.</td>
+<td style="text-align: center;"><i class="fa-brands fa-github" aria-label="github"></i> <a href="https://github.com/NOAA-Big-Data-Program/EpiNOAA-R"><code>EpiNOAA-R</code></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://opentraits.org/datasets.html">Open Traits Network</a></td>
+<td style="text-align: left;">While not a repository <em>per se</em>, the Open Traits Network has compiled an extensive lists of repositories for trait data. Check out their repository inventory for trait data</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><a href="https://www.usgs.gov/products/data/all-data">USGS</a></td>
+<td style="text-align: left;">Hosts data on geology, hydrology, biology, and geography, including topographical maps and natural resource assessments.</td>
+<td style="text-align: center;"><a href="https://cran.r-project.org/web/packages/dataRetrieval/index.html"><code>dataRetrieval</code></a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="general-data-searches" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="general-data-searches"><span class="header-section-number">4.2</span> General Data Searches</h3>
+<p>If you don’t find what you’re looking for in a particular data repository (or want to look for data not included in one of those platforms), you might want to consider a broader search. For instance, <a href="https://www.google.com">Google</a> is a surprisingly good resource for finding data and–for those familiar with Google Scholar for peer reviewed literature-specific Googling–there is a dataset-specific variant of Google called <a href="https://datasetsearch.research.google.com/">Google Dataset Search</a>.</p>
+</section>
+<section id="search-operators" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="search-operators"><span class="header-section-number">4.3</span> Search Operators</h3>
+<p>Virtually all search engines support “operators” to create more effective queries (i.e., search parameters). If you don’t use operators, most systems will just return results that have any of the words in your search which is non-ideal, especially when you’re looking for very specific criteria in candidate datasets.</p>
+<p>See the tabs below for some useful operators that might help narrow your dataset search even when using more general platforms.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Quotes</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Wildcard</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Plus</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">OR</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Minus</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false">Site</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-7" role="tab" aria-controls="tabset-1-7" aria-selected="false">File Type</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-8" role="tab" aria-controls="tabset-1-8" aria-selected="false">In Title</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-9-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-9" role="tab" aria-controls="tabset-1-9" aria-selected="false">In URL</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>Use quotation marks (<code>""</code>) to <strong>search for an exact phrase</strong>. This is particularly useful when you need specific data points or exact wording.</p>
+<p>Example: <code>"reef biodiversity"</code></p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Use an asterisk (<code>*</code>) to <strong>search using a placeholder for any word or phrase in the query</strong>. This is useful for finding variations of a term.</p>
+<p>Example: <code>Pinus * data</code></p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Use a plus sign (<code>+</code>) to <strong>search using more than one query <em>at the same time</em></strong>. This is useful when you need combinations of criteria to be met.</p>
+<p>Example: <code>bat + cactus</code></p>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<p>Use the ‘or’ operator (<code>OR</code>) operator to <strong>search for either one term <em>or</em> another</strong>. It broadens your search to include multiple terms.</p>
+<p>Example: <code>"prairie pollinator" OR "grassland pollinator"</code></p>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<p>Use a minus sign (<code>-</code>; a.k.a. “hyphen”) to <strong>exclude certain words from your search</strong>. Useful to filter out irrelevant results.</p>
+<p>Example: <code>marine biodiversity data -fishery</code></p>
+</div>
+<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<p>Use the site operator (<code>site:</code>) to <strong>search within a specific website or domain</strong>. This is helpful when you’re looking for data from a particular source.</p>
+<p>Example: <code>site:.gov bird data</code></p>
+</div>
+<div id="tabset-1-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-7-tab">
+<p>Use the file type operator (<code>filetype:</code>) to <strong>search for data with a specific file extension</strong>. Useful to make sure the data you find is already in a format you can interact with.</p>
+<p>Example: <code>filetype:tif precipitation data</code></p>
+</div>
+<div id="tabset-1-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-8-tab">
+<p>Use the ‘in title’ operator (<code>intitle:</code>) to <strong>search for pages that have a specific word in the title</strong>. This can narrow down your results to more relevant pages.</p>
+<p>Example: <code>intitle:"lithology"</code></p>
+</div>
+<div id="tabset-1-9" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-9-tab">
+<p>Use the ‘in URL’ operator (<code>inurl:</code>) to <strong>search for pages that have a specific word in the URL</strong>. This can help locate data repositories or specific datasets.</p>
+<p>Example: <code>inurl:data soil chemistry</code></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="making-a-data-inventory" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="making-a-data-inventory"><span class="header-section-number">5</span> Making a Data Inventory</h2>
+<p>As you find data, it will become necessary to–somehow–record what data your group has on hand. A <strong>data inventory</strong> is an extremely useful tool in this effort! A data inventory can take many forms but at its simplest, it should be a <strong>table where each dataset you find gets one row and critical information about that dataset is recorded in each column.</strong> It can be difficult to know which columns to include but keep in mind that it is always easiest to record information that you don’t wind up using than it is to go hunt through all of your datasets for some piece of information you didn’t record in the first place.</p>
+<p>We’ve grouped some recommendations for useful data inventory components below into some loose categories but these are <em>guidelines</em> and your team likely will come up with useful additions–or may not need some of these pieces of information!</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Source</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Explanatory Variables</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Team Delegation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Data Use</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>First and foremost, you’ll want to record <strong>where you found the data and where you can find it again if needed.</strong></p>
+<ul>
+<li>What is the URL to the data?</li>
+<li>When did you last download or otherwise receive the data?</li>
+<li>Who owns the data (either a person or an institution)?</li>
+<li>What is the contact info for the data owner?</li>
+<li>What is the name of the data file when you originally download it?</li>
+<li>Is there a paper or report that may provide context that isn’t included in the official metadata? If so, what’s the link/citation info for that document?
+<ul>
+<li>Sometimes a peer-reviewed paper’s Methods section might include valuable context that isn’t actually included in the data!</li>
+</ul></li>
+<li>If the data have a license, how are you allowed to use the data? How must you cite the data owner/data maintainer?</li>
+</ul>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Sometimes a data inventory can be a <strong>useful source of explanatory variables for your analysis!</strong></p>
+<ul>
+<li>What are the coordinates (i.e., latitude &amp; longitude) of the data?
+<ul>
+<li>Remember to enter these in decimal degrees if you want to use them in analysis!</li>
+</ul></li>
+<li>What country/state/county/locality is the data from?
+<ul>
+<li>Include all of these that might vary across your datasets!</li>
+</ul></li>
+<li>What habitat or ecosystem is the data from?</li>
+<li>What’s the focal taxonomic group?</li>
+<li>What’s the taxonomic granularity?
+<ul>
+<li>I.e., is there information about different species or only at a higher level?</li>
+</ul></li>
+<li>Are the data experimental or observational?
+<ul>
+<li>If experimental, what treatments were applied? When? How frequently?</li>
+</ul></li>
+<li>What is the time range of the data?</li>
+<li>What is the temporal granularity of the data?
+<ul>
+<li>Relatedly, what are the first and last years/time points in the data?</li>
+</ul></li>
+<li>How big was the study area/experimental plot?</li>
+</ul>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>If you start relying on a data inventory, <strong>it can become a valuable place to assign or delegate tasks within your group.</strong> This can also be helpful at the end of the project when you’re trying to remember who deserves credit for finding data/metadata.</p>
+<ul>
+<li>Who–in your group–is responsible for filling out the other columns in the data?
+<ul>
+<li>I.e., whose ‘homework’ is it to flesh out this row of the data inventory?</li>
+</ul></li>
+<li>Who is responsible for double-checking the metadata entered by the first team member?</li>
+<li>Who is the primary point of contact with the original data owner/maintainer?</li>
+</ul>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<p>One <em>critical</em> use of a data inventory that is often overlooked: <strong>are the data useful to your question?</strong></p>
+<p>If you found the data before, your later data searches will likely also turn it up even if it’s not useful! You can save other group members’ a headache by noting not applicable data so they can disregard it from their searches.</p>
+<p>If a particular dataset is not useful, <strong>why is it not useful?</strong> If your questions or in/exclusion criteria evolve, maybe it will become useful later!</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Exercise - Draft a Data Inventory
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>In your project groups:</p>
+<ol type="1">
+<li>Create a spreadsheet to serve as your data inventory (or adapt <a href="https://docs.google.com/spreadsheets/d/1uxNsB2GAh0UB_WAbl0Onv60lMHZiaMzf0hoWRDqgydQ/view">this template</a>)</li>
+<li>Add the name of each dataset you’ve already found</li>
+<li><strong>Discuss</strong> what columns would be useful in your data inventory
+<ul>
+<li>Remember to re-visit the recommendations above!</li>
+</ul></li>
+<li>Add the agreed-upon columns to your data inventory</li>
+<li>Add information for each dataset in the new columns</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="managing-your-data" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="managing-your-data"><span class="header-section-number">6</span> Managing Your Data</h2>
+<p>Successfully managing your data throughout a research project helps ensures its preservation for future use.</p>
+<section id="why-manage-your-data" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="why-manage-your-data"><span class="header-section-number">6.1</span> Why Manage Your Data?</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Personal Benefits</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Better Collaboration</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false">Advancement of Science</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>These practices help you stay organized, protect your work, and keep your science reproducible (or at least traceable) and defensible over time.</p>
+<ul>
+<li><strong>Keep yourself organized</strong>. Develop a consistent system for naming, storing, and retrieving files (data inputs, analytic scripts, outputs at various stages) so you’re don’t lose things later.</li>
+<li><strong>Build reproducibility into your research process</strong>. Prefer coded workflows, and carefully document your work, so you can match any output to the exact inputs and transformations that produced it, whether days or years later.</li>
+<li><strong>Control versions of your data</strong>. Maintain a clear versioning system so you can identify what changed, when, and why – and confidently purge outdated files without fear.</li>
+<li><strong>Quality control your data more efficiently</strong>. Structured data management makes it easier to spot errors, inconsistencies, and gaps early on, before they propagate through your analysis.</li>
+<li><strong>Protect against data loss</strong>. Implement regular backups and redundant storage so that hardware failure, accidental deletion, or software corruption doesn’t cost you irreplaceable work.</li>
+<li><strong>Format your data for re-use</strong>. Use open, well-documented formats and structures that will still be readable and usable years from now, by you or anyone else.</li>
+<li><strong>Document your data proactively</strong>. Write documentation while the details are fresh, not after; your future self will not remember why that variable was coded that way.</li>
+<li><strong>Build credibility through transparency</strong>. Well-managed, shareable data signals rigor and invites constructive scrutiny.</li>
+</ul>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>These practices support efficiency, consistency, and shared accountability across contributor.</p>
+<ul>
+<li><strong>Standardize naming conventions, formats, and folder structures</strong>. What seems obvious to one collaborator may be opaque to another.</li>
+<li><strong>Agree on a merge/integration protocol</strong>. When combining datasets from different sources or institutions, document how conflicts, mismatches, and duplicates were resolved.</li>
+<li><strong>Maintain a clear data provenance log</strong>. In multi-contributor contexts, it must always be traceable which person/pipeline produced which dataset or transformation.</li>
+<li><strong>Define a single source of truth</strong>. Avoid the confusion and errors that can occur when multiple “current” versions of a dataset circulate simultaneously across collaborators.</li>
+<li><strong>Ensure all collaborators have access to shared data</strong>. Designate a shared repository or platform that every team member can reach, so no one is working from a stale local copy or blocked from the data they need to contribute effectively.</li>
+<li><strong>Prefer shared, version-controlled repositories</strong>. Avoid email attachments. This is where collaborative data management most visibly breaks down in practice.</li>
+<li><strong>Establish shared data governance <em>early</em></strong>. Agree on who owns, can modify, and can release data.</li>
+<li><strong>Coordinate on embargo and publication timing</strong>. Clarify who can publish what, and when, to avoid disputes over priority or premature release.</li>
+<li><strong>Plan for contributor turnover</strong>. Over time, some collaborators may come and go; documentation and handoff protocols protect the group’s work.</li>
+</ul>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>These practices protect the long-term value, integrity, and accessibility of data as a shared scientific resource.</p>
+<ul>
+<li><strong>Treat data as the valuable asset it is</strong>. Data is expensive and time-consuming to collect; poor management squanders that investment and may make the work unrepeatable.</li>
+<li><strong>Maximize the utility of existing data</strong>. Well-managed data can be reanalyzed, combined with new datasets, and repurposed for questions beyond the original study, extending its scientific return.</li>
+<li><strong>Continually improve data quality</strong>. Establish practices that support accuracy, integrity, consistency, and timeliness from the point of capture through to publication and archiving.</li>
+<li><strong>Ensure data is used appropriately</strong>. Clear documentation of provenance, consent, and access restrictions helps prevent misuse and protects both participants and researchers.</li>
+<li><strong>Facilitate data sharing</strong>. Data that is well-organized, documented, and formatted is far more likely to actually be shared and used; good management is what makes sharing feasible, not just aspirational.</li>
+<li><strong>Ensure long-term sustainability and accessibility</strong>. Archive data in formats and repositories that will remain accessible as technology changes, so future researchers can build on your work rather than starting from scratch.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="tools-to-manage-your-data" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="tools-to-manage-your-data"><span class="header-section-number">6.2</span> Tools to Manage your Data</h3>
+<p>A Data Management Plan (DMP) is a document that describes how you will use your data during a research project, as well as what you will do with your data long after the project ends. DMPs are living documents and should be updated as research plans change to ensure new data management practices are captured (<a href="https://edirepository.org/resources/data-management-planning">Environmental Data Initiative</a>).</p>
+<p>A well-thought-out plan means you are more likely to:</p>
+<ul>
+<li>Stay organized</li>
+<li>Work efficiently</li>
+<li>Truly share data</li>
+<li>Engage your team</li>
+<li>Meet funder requirements
+<ul>
+<li>DMPs are becoming common in the submission process for proposals</li>
+</ul></li>
+</ul>
+<p>A DMP is both a straightforward blueprint for how you manage your data, <em>and</em> provides guidelines for your and your team on policies, access, roles, and more. While it is important to plan, it is equally important to recognize that no plan is perfect as change is inevitable. To make your DMP as robust as possible, treat it as a “living document” that you periodically review with your team and adjust as the needs of the project change.</p>
+</section>
+<section id="how-to-plan" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="how-to-plan"><span class="header-section-number">6.3</span> How to Plan</h3>
+<ul>
+<li><strong>Plan early:</strong> research shows that over time, information is lost and this is inevitable so it’s important to think about long-term plans for your research at the beginning before you’re deep in your project. And ultimately, you’ll save more time.</li>
+<li><strong>Plan in collaboration:</strong> high engagement of your team and other important contributors is not only a benefit to your project, but it also makes your DMP more resilient. When you include diverse expertise and perspectives to the planning stages, you’re more likely to overcome obstacles in the future.</li>
+<li><strong>Utilize existing resources:</strong> don’t reinvent the wheel! There are many great DMP resources out there. Consider the article <em>Ten Simple Rules for Creating a Good Data Management Plan</em> <span class="citation" data-cites="michener_2015">(<a href="#ref-michener_2015" role="doc-biblioref">Michener 2015</a>)</span>, which has succinct guidelines on what to include in a DMP. Or use an online tool like <a href="https://dmptool.org/" class="external" target="_blank">DMPTool</a>, which provides official DMP templates from funders like NSF, example answers, and allows for collaboration.</li>
+<li><strong>Make revising part of the process:</strong> Don’t let your DMP collect dust after your initially write it. Make revising the DMP part of your research project and use it as a guide to ensure you’re keeping on track.</li>
+<li><strong>Include tidy and ethical lenses:</strong> It is important to start thinking through these lenses during the planning process of your DMP, it will make it easier to include and maintain tidy and ethical principles throughout the entire project. We will discuss in depth about tidy data and FAIR principles and we can point you to some useful resources on data ethics though the CARE principles.</li>
+</ul>
+</section>
+</section>
+<section id="metadata-best-practices" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="metadata-best-practices"><span class="header-section-number">7</span> Metadata Best Practices</h2>
+<p>Within the data life cycle you can be collecting data (creating new data) or integrating data that has all ready been collected. Either way, <strong>metadata</strong> plays plays a major role to successfully spin around the cycle because it enables data reuse long after the original collection.</p>
+<p>Imagine that you’re writing your metadata for a typical researcher (who might even be you!) 30+ years from now - what will they need to understand what’s inside your data files? The goal is to have enough information for the researcher to <strong>understand the data</strong>, <strong>interpret the data</strong>, and then <strong>reuse the data</strong> in another study.</p>
+<p>Another way to think about metadata is to answer the following questions with the documentation:</p>
+<ul>
+<li>What was measured?</li>
+<li>Who measured it?</li>
+<li>When was it measured?</li>
+<li>Where was it measured?</li>
+<li>How was it measured?</li>
+<li>How is the data structured?</li>
+<li>Why was the data collected?</li>
+<li>Who should get credit for this data (researcher AND funding agency)?</li>
+<li>How can this data be reused (licensing)?</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Bibliography</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Findability</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false">Interpretable</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false">Data Structure</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false">Attribution</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-6" role="tab" aria-controls="tabset-4-6" aria-selected="false">Metadata Standards</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-7" role="tab" aria-controls="tabset-4-7" aria-selected="false">Data Identifiers</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-8-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-8" role="tab" aria-controls="tabset-4-8" aria-selected="false">Data Citation</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>The details that will help your data be cited correctly are:</p>
+<ul>
+<li><strong>Global identifier</strong> like a digital object identifier (DOI)</li>
+<li>Descriptive <strong>title</strong> that includes information about the topic, the geographic location, the dates, and if applicable, the scale of the data</li>
+<li>Descriptive <strong>abstract</strong> that serves as a brief overview off the specific contents and purpose of the data package</li>
+<li><strong>Funding information</strong> like the award number and the sponsor</li>
+<li><strong>People and organizations</strong> like the creator of the dataset (i.e.&nbsp;who should be cited), the person to <strong>contact</strong> about the dataset (if different than the creator), and the contributors to the dataset</li>
+</ul>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>The details that will help your data be discovered correctly are:</p>
+<ul>
+<li><strong>Geospatial coverage</strong> of the data, including the field and laboratory sampling locations, place names and precise coordinates</li>
+<li><strong>Temporal coverage</strong> of the data, including when the measurements were made and what time period (ie the calendar time or the geologic time) the measurements apply to</li>
+<li><strong>Taxonomic coverage</strong> of the data, including what species were measured and what taxonomy standards and procedures were followed</li>
+<li>Any other <strong>contextual information</strong> as needed</li>
+</ul>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<p>The details that will help your data be interpreted correctly are:</p>
+<ul>
+<li><strong>Collection methods</strong> for both field and laboratory data the full experimental and project design as well as how the data in the dataset fits into the overall project</li>
+<li><strong>Processing methods</strong> for both field and laboratory samples</li>
+<li>All sample <strong>quality control procedures</strong></li>
+<li><strong>Provenance</strong> information to support your analysis and modeling methods</li>
+<li>Information about the <strong>hardware and software</strong> used to process your data, including the make, model, and version</li>
+<li><strong>Computing quality control</strong> procedures like testing or code review</li>
+</ul>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<ul>
+<li><strong>Everything needs a description</strong>: the data model, the data objects (like tables, images, matrices, spatial layers, etc), and the variables all need to be described so that there is no room for misinterpretation.</li>
+<li><strong>Variable information</strong> includes the definition of a variable, a standardized unit of measurement, definitions of any coded values (i.e.&nbsp;0 = not collected), and any missing values (i.e.&nbsp;999 = NA).</li>
+</ul>
+<p>Not only is this information helpful to you and any other researcher in the future using your data, but it is also helpful to search engines. The semantics of your dataset are crucial to ensure your data is both discoverable by others and interoperable (that is, reusable).</p>
+<p>For example, if you were to search for the character string “carbon dioxide flux” in a data repository, not all relevant results will be shown due to varying vocabulary conventions (i.e., “CO2 flux” instead of “carbon dioxide flux”) across disciplines — only datasets containing the exact words “carbon dioxide flux” are returned. With correct semantic annotation of the variables, your dataset that includes information about carbon dioxide flux but that calls it CO2 flux WOULD be included in that search.</p>
+</div>
+<div id="tabset-4-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-5-tab">
+<p>Correctly <strong>assigning a way for your datasets to be cited</strong> and reused is the last piece of a complete metadata document. This section sets the scientific rights and expectations for the future on your data, like:</p>
+<ul>
+<li>Citation format to be used when giving credit for the data</li>
+<li>Attribution expectations for the dataset</li>
+<li>Reuse rights, which describe who may use the data and for what purpose</li>
+<li>Redistribution rights, which describe who may copy and redistribute the metadata and the data</li>
+<li>Legal terms and conditions like how the data are licensed for reuse.</li>
+</ul>
+</div>
+<div id="tabset-4-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-6-tab">
+<p>So, <strong>how does a computer organize all this information?</strong> There are a number of metadata standards that make your metadata machine readable and therefore easier for data curators to publish your data.</p>
+<ul>
+<li><a href="https://eml.ecoinformatics.org/">Ecological Metadata Language (EML)</a></li>
+<li><a href="https://www.fgdc.gov/metadata/iso-standards">Geospatial Metadata Standards (ISO 19115 and ISO 19139)</a>
+<ul>
+<li>See <a href="http://www.ncei.noaa.gov/sites/default/files/2020-04/ISO%2019115-2%20Workbook_Part%20II%20Extentions%20for%20imagery%20and%20Gridded%20Data.pdf">NOAA’s ISO Workbook</a></li>
+</ul></li>
+<li><a href="chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata/biodatap.pdf">Biological Data Profile (BDP)</a></li>
+<li><a href="https://www.dublincore.org/">Dublin Core</a></li>
+<li><a href="https://dwc.tdwg.org/">Darwin Core</a></li>
+<li><a href="https://www.loc.gov/standards/premis/">Preservation Metadata: Implementation Strategies (PREMIS)</a></li>
+<li><a href="https://www.loc.gov/standards/mets/">Metadata Encoding Transmission Standard (METS)</a></li>
+</ul>
+<p><em>Note this is not an exhaustive list.</em></p>
+</div>
+<div id="tabset-4-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-7-tab">
+<p>Many journals require a DOI (a digital object identifier) be assigned to the published data before the paper can be accepted for publication. The reason for that is so that the data can easily be found and easily linked to.</p>
+<p>Some data repositories assign a DOI for each dataset you publish on their repository. But, if you need to update the datasets, check the policy of the data repository. Some repositories assign a new DOI after you update the dataset. If this is the case, researchers should cite the exact version of the dataset that they used in their analysis, even if there is a newer version of the dataset available.</p>
+</div>
+<div id="tabset-4-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-8-tab">
+<p>Researchers should get in the habit of citing the data that they use (even if it’s their own data!) in each publication that uses that data.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="data-sharing-preservation" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="data-sharing-preservation"><span class="header-section-number">8</span> Data Sharing &amp; Preservation</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/why-manage-small.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" alt="Small diagram of three boxes connected by two, one-way arrows. The boxes (from first in the path to last) are labeled 'Data Management', 'Data Sharing', and 'Data Reuse', respectively"></p>
+</figure>
+</div>
+<section id="data-packages" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="data-packages"><span class="header-section-number">8.1</span> Data Packages</h3>
+<p><strong>We define a data package as a scientifically useful collection of data and metadata that a researcher wants to preserve.</strong></p>
+<p>Sometimes a data package represents all of the data from a particular experiment, while at other times it might be all of the data from a grant, or on a topic, or associated with a paper. Whatever the extent, we define a data package as having one or more data files, software files, and other scientific products such as graphs and images, all tied together with a descriptive metadata document.</p>
+<p>Many data repositories assign a unique identifier to every version of every data file, similarly to how it works with source code commits in GitHub. Those identifiers usually take one of two forms. A DOI identifier, often assigned to the metadata and becomes a publicly citable identifier for the package. Each of the other files gets a global identifier, often a UUID that is globally unique. This allows to identify a digital entity within a data package.</p>
+<p>In the graphic to the side, the package can be cited with the DOI <code>doi:10.5063/F1Z1899CZ</code>,and each of the individual files have their own identifiers as well.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/data-package.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Diagram of a data package where a single metadata box is connected to a stacked set of boxes labeled 'data granule 1', both of these are connected to boxes labeled 'software' and 'figures'"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="bonus-load-data-from-box-into-r" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="bonus-load-data-from-box-into-r"><span class="header-section-number">9</span> Bonus: Load data from Box into R</h2>
+<p>The <code>boxr</code> package provides a convenient R interface to the Box API, allowing you to read, write, and manage files stored in Box directly from your R environment — no manual downloading required.</p>
+<p>Working with Box through the API keeps your workflow reproducible and collaborative. Your R scripts can reference shared Box files directly, making it easy for your team to work from a single source of truth without emailing files or managing local copies.</p>
+<p>In this activity, we will see how to:</p>
+<ul>
+<li>Authenticate with the Box API using OAuth2 via <code>box_auth()</code></li>
+<li>Navigate your Box directory structure with <code>box_search()</code> and <code>box_ls()</code></li>
+<li>Read data directly into R using <code>box_read()</code> for common formats like .csv</li>
+</ul>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Setup, Part 1: Enable API access within Box
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>In order to access Box from R, you first need to set up an “application” that opens a gateway for you to interact with the Box API, and creates credentials for you. <strong>This is an initial setup activity that you will only need to do once.</strong></p>
+<p><strong>Step 1:</strong> After logging into Box in your web browser, manually go to the <a href="https://app.box.com/developers/console">Box Developers Console</a></p>
+<p><strong>Step 2:</strong> Locate and click the <strong>New App +</strong> button in the upper right to create a new Box API application.</p>
+<ul>
+<li><strong>App Name</strong>: Choose whatever you want, e.g.&nbsp;“Boxr”</li>
+<li><strong>App Type</strong>: Choose <strong>OAuth 2.0</strong></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/box-new-app.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Box new app interface"></p>
+</figure>
+</div>
+<p>You should now see your application listed in the developer console.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/box-app-created.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Box app listed in developer console"></p>
+</figure>
+</div>
+<p><strong>Step 3:</strong> Click on the application to open the app settings interface, and select the <strong>Configuration</strong> tab. Scroll down to the <strong>Redirect URI</strong> section, and add this address: <code>http://localhost:1410/</code></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/box-redirect-uri.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Box configuration section for redirect URI"></p>
+</figure>
+</div>
+<p>Be sure to click <strong>Add</strong> and the <strong>Save Changes</strong>!</p>
+<p><strong>Step 4:</strong> Get your credentials! Scroll to the <strong>OAuth 2.0 Credentials</strong> section in the same <strong>Configuration</strong> panel to locate your Client ID and Client Secret. We will pass them to R in the next section.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/lecture_data_mgmt_discovery/box-credentials.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Box configuration section for redirect URI"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Setup, Part 2: Install and configure the boxr package
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p><strong>Step 1:</strong> Install <code>boxr</code>, an R package for interacting with the Box API.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">install.packages</span>(<span class="st">"boxr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Step 2:</strong> In the base folder of your R project (Positron folder), create a <code>.Renviron</code> file. Add the following two lines, replacing your actual credentials from the Box Developers Console in the previous section.</p>
+<pre><code>BOX_CLIENT_ID = &lt;your_client_id&gt;
+BOX_CLIENT_SECRET = &lt;your_client_secret&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>After completing the setup steps above, you can use the <code>boxr</code> package to log into Box, explore your Box workspace, locate a particular CSV file, and read it!</p>
+<p>Let’s start out by loading <code>boxr</code> package.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boxr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>First we need to log in. The first time you do this, it should open a browser for authentication. If successful, you’ll see console output indicating that authentication is complete, and reporting your identity.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">box_auth</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Using `BOX_CLIENT_ID` from environment</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Using `BOX_CLIENT_SECRET` from environment</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Waiting for authentication in browser...</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Press Esc/Ctrl + C to abort</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Authentication complete.</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># boxr: Authenticated using OAuth2 as &lt;Your name&gt;(&lt;Your email address&gt;, id: &lt;Your box ID&gt;)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After authenticating, we can explore our Box workspace. Two key functions are <code>box_ls()</code>, which lists the contents of a folder, and <code>box_search()</code>, which allows you to search for content. In the code sample below, we’ll first search for a folder by name, then list the contents of that folder, then list the contents of a particular sub-folder.</p>
+<p>You’ll notice that each code segment follows the same pattern:</p>
+<ol type="1">
+<li>Call a <code>boxr</code> function that sends a request to the Box API and returns a response.</li>
+<li>Coerce that response to an R data frame, and display a subset of columns.</li>
+</ol>
+<p>Note that we could combine these into one expression rather than separating the code into two steps, but here we keep them separate to make it clearer what’s going on, and also to demonstrate the common API interaction pattern of <code>Send request -&gt; Get response -&gt; Process response</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Search for the base project folder, and return it as a data frame</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> response <span class="ot">&lt;-</span> <span class="fu">box_search_folders</span>(<span class="st">"2026_DELTA_SYNTHESIS_WORKGROUP"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> base_folder <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(response)[<span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"type"</span>, <span class="st">"size"</span>, <span class="st">"id"</span>)]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                            name   type     size           id</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  2026_DELTA_SYNTHESIS_WORKGROUP folder 58719301 xxxxxxxxxxxx</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the base folder id, list the contents of that folder</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> response <span class="ot">&lt;-</span> <span class="fu">box_ls</span>(base_folder<span class="sc">$</span>id)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">as.data.frame</span>(response)[<span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"type"</span>, <span class="st">"size"</span>, <span class="st">"id"</span>)]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#      name   type     size           id</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  Training folder     3716 375386190471</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># List the contents of the 'Training' folder</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> response <span class="ot">&lt;-</span> <span class="fu">box_ls</span>(<span class="dv">375386190471</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">as.data.frame</span>(response)[<span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"type"</span>, <span class="st">"size"</span>, <span class="st">"id"</span>)]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#            name type size            id</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  airquality.csv file 2802 2190747337891</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Finally, let’s get some data from Box! The <code>boxr</code> package provides multiple ways of retrieving data – including both downloading files to your computer, and reading data into R. We’ll do the latter here, using the <code>box_read_csv()</code> function that downloads a CSV and reads it into R as a data frame, all in one step.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read airquality.csv into R as a data frame</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll also pass the `stringsAsFactors` argument to make this match</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the same data frame that was used to create this file in the first place!</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> airquality_from_box <span class="ot">&lt;-</span> <span class="fu">box_read_csv</span>(<span class="dv">2190747337891</span>, <span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">identical</span>(airquality, airquality_from_box)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!-- Holding until later in the course
+## Practice Evaluating a Data Package
+
+Explore data packages published on EDI assess the quality of their metadata. Imagine you are planning on using this data for a synthesis project.
+
+::::{.callout-exercise}
+### Exercise - Evaluate Data on EDI
+
+:::{.panel-tabset}
+### Separate Into Groups
+
+Break into four groups and use the following data packages:
+
+- **Group A:** [SBC LTER: Reef: Abundance, size and fishing effort for California Spiny Lobster (Panulirus interruptus), ongoing since 2012](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.77.8)
+- **Group B:** [Physiological stress of American pika (Ochotona princeps) and associated habitat characteristics for Niwot Ridge, 2018 - 2019](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-nwt.268.1)
+- **Group C:** [Ecological and social interactions in urban parks: bird surveys in local parks in the central Arizona-Phoenix metropolitan area](https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-cap&identifier=256&revision=10)
+- **Group D:** [Interagency Ecological Program: Fish catch and water quality data from the Sacramento River floodplain and tidal slough, collected by the Yolo Bypass Fish Monitoring Program, 1998-2021.](https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=233&revision=3)
+
+### Evaluate a Package
+
+Your group will evaluate a data package for its: (1) metadata quality, and (2) data documentation quality for reusability.
+
+1.  Open our [Data Package Assessment Rubric](https://docs.google.com/document/d/1PQpw9ohOMY7K1yBWaknMHV0dGEm0GnZ9pCB8_i2JPoU/edit?usp=sharing) (Note: Evaluate only the Metadata Documentation and Quality section), make copy and:
+2. **Investigate the metadata in the provided data**
+    - Does the metadata meet the standards we talked about? How so?
+    - If not, how would you improve the metadata based on the standards we talked about?
+3. **Investigate the overall data documentation in the data package**
+    - Is the documentation sufficient enough for reusing the data? Why or why not?
+    - If not, how would you improve the data documentation? What's missing?
+
+### Discussion
+
+Elect someone to share back to the group the following:
+
+- How easy or challenging was it to find the metadata and other data documentation you were evaluating? Why or why not?
+- What documentation stood out to you? What did you like or not like about it?
+- Do you feel like you understand the research project enough to use the data yourself (aka reproducibility?
+:::
+::::
+-->
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-michener_2015" class="csl-entry" role="listitem">
+Michener, William K. 2015. <span>“Ten Simple Rules for Creating a Good Data Management Plan.”</span> <em>PLOS Computational Biology</em> 11 (10): 1–9. <a href="https://doi.org/10.1371/journal.pcbi.1004525">https://doi.org/10.1371/journal.pcbi.1004525</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/nceas-learning-hub\.github\.io\/lhCatalog\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright © 2026, NCEAS</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

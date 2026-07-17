@@ -11,7 +11,6 @@ exercises: ### for custom theme callouts
   number: true ### see https://cambiotraining.github.io/quarto-course-template/materials/02-content_guidelines.html
 editor: source
 execute:
-  freeze: auto
   enabled: false
 
 format:
@@ -19,7 +18,7 @@ format:
     code-annotations: hover ### tool tip style footnotes for code
 
 website:
-  title: "lhCatalog"
+  title: "Learning Hub Lessons Catalog"
   reader-mode: false
   repo-url: https://github.com/nceas-learning-hub/lhCatalog
 
@@ -49,9 +48,7 @@ website:
       - icon: github
         href: https://github.com/nceas-learning-hub/lhCatalog
     contents:
-      - index.qmd # preface
-      # START SESSIONS
-      # END SESSIONS
+      - index.qmd
 
   page-footer:
     center: "Copyright \u00a9 2026, NCEAS"

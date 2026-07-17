@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Introduces the sf package for wrangling vector spatial data, spatial joins, and creating static and interactive maps with ggplot2 and leaflet.">
+
+<title>Working with Vector Spatial Data – Learning Hub Lessons Catalog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../_extensions/nceas-learning-hub/theme/banner/logo_lh_hex.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a295ad415f53c92ed3c0baa5ae267f41.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-04d35828442bc8f9a3bcb4b37829e7a4.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: #44444444;
+      }
+</style>
+
+
+<link rel="stylesheet" href="../_extensions/nceas-learning-hub/theme/banner/banner.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learning Hub Lessons Catalog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-instructors" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Instructors</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-instructors">    
+        <li>
+    <a class="dropdown-item" href="https://www.oharascience.com/">
+ <span class="dropdown-text">Casey O’Hara</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/nceas-learning-hub/lhCatalog"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Working with Vector Spatial Data</h1>
+                  <div>
+        <div class="description">
+          Introduces the sf package for wrangling vector spatial data, spatial joins, and creating static and interactive maps with ggplot2 and leaflet.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">spatial-data</div>
+                <div class="quarto-category">data-visualization</div>
+                <div class="quarto-category">tidyverse</div>
+                <div class="quarto-category">lecture</div>
+                <div class="quarto-category">advanced</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#scope-vector-not-raster" id="toc-scope-vector-not-raster" class="nav-link active" data-scroll-target="#scope-vector-not-raster"><span class="header-section-number">1</span> Scope: Vector, Not Raster</a></li>
+  <li><a href="#brief-introduction-to-sf" id="toc-brief-introduction-to-sf" class="nav-link" data-scroll-target="#brief-introduction-to-sf"><span class="header-section-number">2</span> Brief Introduction to <code>sf</code></a></li>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link" data-scroll-target="#about-the-data"><span class="header-section-number">3</span> About the Data</a>
+  <ul class="collapse">
+  <li><a href="#download-the-data" id="toc-download-the-data" class="nav-link" data-scroll-target="#download-the-data"><span class="header-section-number">3.1</span> Download the Data</a></li>
+  </ul></li>
+  <li><a href="#set-up-a-new-analysis" id="toc-set-up-a-new-analysis" class="nav-link" data-scroll-target="#set-up-a-new-analysis"><span class="header-section-number">4</span> Set Up a New Analysis</a></li>
+  <li><a href="#explore-the-data" id="toc-explore-the-data" class="nav-link" data-scroll-target="#explore-the-data"><span class="header-section-number">5</span> Explore the Data</a>
+  <ul class="collapse">
+  <li><a href="#read-in-and-plot" id="toc-read-in-and-plot" class="nav-link" data-scroll-target="#read-in-and-plot"><span class="header-section-number">5.1</span> Read In and Plot</a></li>
+  <li><a href="#coordinate-reference-systems-crs" id="toc-coordinate-reference-systems-crs" class="nav-link" data-scroll-target="#coordinate-reference-systems-crs"><span class="header-section-number">5.2</span> Coordinate Reference Systems (CRS)</a></li>
+  </ul></li>
+  <li><a href="#sf-the-tidyverse" id="toc-sf-the-tidyverse" class="nav-link" data-scroll-target="#sf-the-tidyverse"><span class="header-section-number">6</span> <code>sf</code> &amp; the Tidyverse</a></li>
+  <li><a href="#spatial-joins" id="toc-spatial-joins" class="nav-link" data-scroll-target="#spatial-joins"><span class="header-section-number">7</span> Spatial Joins</a>
+  <ul class="collapse">
+  <li><a href="#download-the-population-data" id="toc-download-the-population-data" class="nav-link" data-scroll-target="#download-the-population-data"><span class="header-section-number">7.1</span> Download the Population Data</a></li>
+  <li><a href="#read-in-population-data" id="toc-read-in-population-data" class="nav-link" data-scroll-target="#read-in-population-data"><span class="header-section-number">7.2</span> Read in Population Data</a></li>
+  <li><a href="#turn-pop_df-into-a-spatial-object" id="toc-turn-pop_df-into-a-spatial-object" class="nav-link" data-scroll-target="#turn-pop_df-into-a-spatial-object"><span class="header-section-number">7.3</span> Turn <code>pop_df</code> Into a Spatial Object</a></li>
+  <li><a href="#join-population-data-with-alaska-regions" id="toc-join-population-data-with-alaska-regions" class="nav-link" data-scroll-target="#join-population-data-with-alaska-regions"><span class="header-section-number">7.4</span> Join Population Data with Alaska Regions</a></li>
+  <li><a href="#calculate-total-population-by-region" id="toc-calculate-total-population-by-region" class="nav-link" data-scroll-target="#calculate-total-population-by-region"><span class="header-section-number">7.5</span> Calculate Total Population by Region</a></li>
+  <li><a href="#dissolving-geometries-with-group_by-summarize" id="toc-dissolving-geometries-with-group_by-summarize" class="nav-link" data-scroll-target="#dissolving-geometries-with-group_by-summarize"><span class="header-section-number">7.6</span> Dissolving Geometries with <code>group_by() %&gt;% summarize()</code></a></li>
+  <li><a href="#save-the-spatial-object-to-a-new-file" id="toc-save-the-spatial-object-to-a-new-file" class="nav-link" data-scroll-target="#save-the-spatial-object-to-a-new-file"><span class="header-section-number">7.7</span> Save the Spatial Object to a New File</a></li>
+  </ul></li>
+  <li><a href="#visualize-static-maps-with-ggplot2" id="toc-visualize-static-maps-with-ggplot2" class="nav-link" data-scroll-target="#visualize-static-maps-with-ggplot2"><span class="header-section-number">8</span> Visualize Static Maps with <code>ggplot2</code></a>
+  <ul class="collapse">
+  <li><a href="#incorporate-base-maps-into-static-maps" id="toc-incorporate-base-maps-into-static-maps" class="nav-link" data-scroll-target="#incorporate-base-maps-into-static-maps"><span class="header-section-number">8.1</span> Incorporate Base Maps Into Static Maps</a></li>
+  </ul></li>
+  <li><a href="#visualize-interactive-maps-with-leaflet" id="toc-visualize-interactive-maps-with-leaflet" class="nav-link" data-scroll-target="#visualize-interactive-maps-with-leaflet"><span class="header-section-number">9</span> Visualize Interactive Maps With <code>leaflet</code></a>
+  <ul class="collapse">
+  <li><a href="#create-basic-leaflet-map" id="toc-create-basic-leaflet-map" class="nav-link" data-scroll-target="#create-basic-leaflet-map"><span class="header-section-number">9.1</span> Create Basic <code>leaflet</code> Map</a></li>
+  <li><a href="#add-cities-and-zoom-in" id="toc-add-cities-and-zoom-in" class="nav-link" data-scroll-target="#add-cities-and-zoom-in"><span class="header-section-number">9.2</span> Add Cities and Zoom In</a></li>
+  </ul></li>
+  <li><a href="#geometry-operations-going-further" id="toc-geometry-operations-going-further" class="nav-link" data-scroll-target="#geometry-operations-going-further"><span class="header-section-number">10</span> Geometry Operations (Going Further)</a></li>
+  <li><a href="#more-spatial-resources" id="toc-more-spatial-resources" class="nav-link" data-scroll-target="#more-spatial-resources"><span class="header-section-number">11</span> More Spatial Resources</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<div class="callout callout-style-default callout-learning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-learning">
+<p>After completing this session, you will be able to:</p>
+<ul>
+<li>Read, inspect, and write vector spatial data using <code>sf</code></li>
+<li>Understand and transform coordinate reference systems (CRS)</li>
+<li>Join spatial and non-spatial data</li>
+<li>Summarize geometries with <code>dplyr</code></li>
+<li>Make static maps with <code>ggplot2</code> and interactive maps with <code>leaflet</code></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<section id="scope-vector-not-raster" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="scope-vector-not-raster"><span class="header-section-number">1</span> Scope: Vector, Not Raster</h2>
+<p>This lesson focuses on working with <strong>vector spatial data</strong> in R, primarily using the <code>sf</code> “simple features” package in R. Vector spatial data includes spatial points, lines, polygons, and multi-polygon features, each feature described with attributes such as a place name, an ID, or the population associated with the feature.</p>
+<p>This lesson <strong>does not</strong> focus on working with <strong>raster spatial data</strong>. Raster data is typically a grid of pixels with each pixel containing some value, like elevation or temperature. Satellite imagery and remote sensing data are common examples of raster data.</p>
+<div id="fig-raster-vs-vector" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-raster-vs-vector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_geospatial_vector_analysis/vector_diagram.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Vector spatial data"><img src="images/r_geospatial_vector_analysis/vector_diagram.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:83.0%" alt="Diagram of vector spatial data types including points, lines (points connected by lines), and polygons (three or more points that define the edges of a shape)"></a></p>
+</figure>
+</div>
+<figcaption>Vector spatial data</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_geospatial_vector_analysis/raster_diagram.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Raster spatial data"><img src="images/r_geospatial_vector_analysis/raster_diagram.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" alt="Satellite picture (raster) of a forest with an inset showing how the pixels in that image relate to information stored in each pixel"></a></p>
+</figure>
+</div>
+<figcaption>Raster spatial data</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-vs-vector-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Image Source - National Ecological Observatory Network (NEON)
+</figcaption>
+</figure>
+</div>
+<p>Mastering spatial data in R (or any GIS system) requires a solid understanding of both vector and raster spatial data; at the end of the lesson are some resources to build you up on vector data and get you started with rasters.</p>
+</section>
+<section id="brief-introduction-to-sf" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="brief-introduction-to-sf"><span class="header-section-number">2</span> Brief Introduction to <code>sf</code></h2>
+<p>From the <a href="https://r-spatial.github.io/sf/articles/sf1.html"><strong><code>sf</code></strong></a> vignette:</p>
+<blockquote class="blockquote">
+<p>Simple features or simple feature access refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects. It also describes how such objects can be stored in and retrieved from databases, and which geometrical operations should be defined for them.</p>
+</blockquote>
+<p>The <code>sf</code> package is an R implementation of <a href="https://en.wikipedia.org/wiki/Simple_Features">Simple Features</a>. This package incorporates:</p>
+<ul>
+<li>a new spatial data class system in R<br>
+</li>
+<li>functions for reading and writing spatial data<br>
+</li>
+<li>tools for spatial operations on vectors</li>
+</ul>
+<p>Most of the functions in this package starts with prefix <code>st_</code> which stands for <em>spatial</em> and <em>temporal</em>.</p>
+<p>In this lesson, our goal is to use spatial data on Alaska regions and community populations to summarize population per region. From this, we will then create a map that shows regional populations, major rivers, and community locations:</p>
+<p><img src="images/r_geospatial_vector_analysis/alaska_population.png" class="img-fluid"></p>
+</section>
+<section id="about-the-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="about-the-data"><span class="header-section-number">3</span> About the Data</h2>
+<p>Most of the data used in this tutorial are simplified versions of real datasets available on the <a href="https://knb.ecoinformatics.org/">KNB Data Repository</a>. We are using simplified datasets to ease the processing burden on all our computers since the original geospatial datasets are high-resolution. These simplified versions of the datasets may contain topological errors.</p>
+<p>The spatial data we will be using to create the map are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Original datasets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alaska regional boundaries</td>
+<td>Jared Kibele and Jeanette Clark. 2018. State of Alaska’s Salmon and People Regional Boundaries. Knowledge Network for Biocomplexity. <a href="https://doi.org/10.5063/F1125QWP">doi:10.5063/F1125QWP</a>.</td>
+</tr>
+<tr class="even">
+<td>Community locations and population</td>
+<td>Jeanette Clark, Sharis Ochs, Derek Strong, and National Historic Geographic Information System. 2018. Languages used in Alaskan households, 1990-2015. Knowledge Network for Biocomplexity. <a href="https://doi.org/10.5063/F11G0JHX">doi:10.5063/F11G0JHX</a>.</td>
+</tr>
+<tr class="odd">
+<td>Alaska rivers</td>
+<td>The rivers shapefile is a simplified version of Jared Kibele and Jeanette Clark. Rivers of Alaska grouped by SASAP region, 2018. Knowledge Network for Biocomplexity. <a href="https://doi.org/10.5063/F1PZ573F">doi:10.5063/F1SJ1HVW</a>.</td>
+</tr>
+</tbody>
+</table>
+<section id="download-the-data" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="download-the-data"><span class="header-section-number">3.1</span> Download the Data</h3>
+<p>Open your project <code>training_{username}</code>. We will download a <strong>simplified</strong> version of the Alaska regional boundaries dataset. Here are two methods: programmatic (for reproducibility) and manual (perhaps more intuitive?). If you are working on a server, the programmatic method is probably best, since you won’t have to later upload the downloaded file to the server.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Programmatic</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Manual</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>Here is programmatic code to download <a href="https://dev.nceas.ucsb.edu/view/urn:uuid:6f07cb25-a4a1-48e8-95cb-74f532f3ce2d">the dataset from KNB</a> into your current project, unzip it into a folder, and then delete the zip file. Copy and paste this into the console in Positron or RStudio to run it. Then check that your data folder has an <code>ak_regions</code> subfolder with some files.</p>
+<!-- NOTE mode = "wb" is important for Windows since these are binary files -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">'data/ak_regions'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(out_dir)) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    knb_url <span class="ot">&lt;-</span> <span class="st">"https://dev.nceas.ucsb.edu/knb/d1/mn/v2/object/urn%3Auuid%3Aaceaecb2-1ce0-4d41-a839-d3607d32bb58"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">download.file</span>(<span class="at">url =</span> knb_url, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">destfile =</span> <span class="st">'shapefile_demo_data.zip'</span>, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mode =</span> <span class="st">'wb'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unzip</span>(<span class="st">'shapefile_demo_data.zip'</span>, <span class="at">exdir =</span> out_dir)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">file.remove</span>(<span class="st">'shapefile_demo_data.zip'</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Include this in your script?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You could include this code in your script, so any time anyone runs it for the first time it automatically downloads the required data. This is great for reproducibility!</p>
+<p>The code above includes a check <code>if(!dir.exists(out_dir))</code>: if a user already has this directory, presumably they’ve downloaded the data so the script does not need to re-download it!</p>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Navigate to <a href="https://dev.nceas.ucsb.edu/view/urn:uuid:6f07cb25-a4a1-48e8-95cb-74f532f3ce2d">this dataset</a> on KNB’s test site and download the zip folder.</p>
+<ul>
+<li>If on a local computer: unzip the contents of this file into a folder <code>data/ak_regions</code> within your current project.</li>
+<li>If on a server: Upload the zip folder to a <code>data/ak_regions</code> folder in the <code>training_{username}</code> project. You don’t need to unzip the folder ahead of time, uploading will automatically unzip the folder.</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- end tabset -->
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Add spatial data to <code>.gitignore</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Spatial data are typically binary format files, and often quite large (&gt; 5 MB), and therefore not well suited for Git tracking. Let’s add them to the <code>.gitignore</code> in the project root folder, by adding a line <code>/data/ak_regions/</code>.</p>
+<p>If you include code to programmatically download the data (see above), then any collaborators will be able to automatically download the data to their own computers, so no need to worry about sharing the data files themselves.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="set-up-a-new-analysis" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="set-up-a-new-analysis"><span class="header-section-number">4</span> Set Up a New Analysis</h2>
+<p>In your <code>training_{username}</code> project, create a new Quarto file.</p>
+<ul>
+<li>Title it “Working with Vector Spatial Data in R” and add any other information to the YAML header (author, date, format features).</li>
+<li>Save the file and name it “intro_to_vector_spatial.qmd”. You may wish to save it in the project root, or a scripts folder - your choice!</li>
+</ul>
+<p>Delete any default text below the YAML header and set up a basic structure with Markdown headers:</p>
+<ul>
+<li>Setup</li>
+<li>Data Exploration</li>
+<li>Analysis</li>
+<li>Visualization</li>
+</ul>
+<p>In the Setup section, attach the following libraries in a code chunk (perhaps with <code>#| warning: false</code> and <code>#| message: false</code> options).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Data wrangling packages:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">### Simple Features vector spatial data:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">### Data visualization packages:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggspatial) </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prettymapr) <span class="do">### ggspatial depends on but does not import prettymapr for internal functions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="explore-the-data" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="explore-the-data"><span class="header-section-number">5</span> Explore the Data</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Optional: include code here for programmatic download
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To enhance reproducibility for others interested in this analysis, include the code here to download the data from the original source (ideally, checking whether it has already been downloaded)!</p>
+</div>
+</div>
+<section id="read-in-and-plot" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="read-in-and-plot"><span class="header-section-number">5.1</span> Read In and Plot</h3>
+<p><code>sf</code> reads most vector formats (shapefiles, GeoPackages, GeoJSON, etc.) with a single function. The result looks and behaves like a <code>data.frame</code>, with one special column called <code>geometry</code> that holds the spatial information.</p>
+<p>Read in the shapefile of regional boundaries in Alaska using <code>read_sf()</code> and then create a basic plot of the data <code>plot()</code>. Here we’re adding a <code>_sf</code> suffix to our object name, to remind us that this is a Simple Features object with spatial information.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ak_rgns_sf <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">here</span>(<span class="st">"data/ak_regions/ak_regions_simp.shp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When we plot the basic object, it shows us a mini plot for each attribute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick plot</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ak_rgns_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="coordinate-reference-systems-crs" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="coordinate-reference-systems-crs"><span class="header-section-number">5.2</span> Coordinate Reference Systems (CRS)</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/r_geospatial_vector_analysis/projections-esri-blog.jpg" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption>Source: <a href="https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/gcs_vs_pcs/">ESRI</a></figcaption>
+</figure>
+</div>
+<p>Every spatial dataset has a <strong>coordinate reference system (CRS)</strong> that ties coordinates to locations on Earth. The CRS bundles two things:</p>
+<ul>
+<li><strong>Datum</strong> — the reference ellipsoid (e.g., WGS84, NAD83)</li>
+<li><strong>Projection</strong> — the math that flattens the ellipsoid onto a 2-D plane</li>
+</ul>
+<p>When there’s no projection, you’re working in geographic coordinates (latitude/longitude). Check the CRS with <code>st_crs()</code>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/r_geospatial_vector_analysis/geospatial-crs-diagram.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Datum</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Projection</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>The datum is how you georeference your points (in 3 dimensions!) onto a spheroid, or the Earth. The Earth is not a perfect sphere and there are many ways to describe its shape. For example, is the Earth shaped like a lemon, lime, or orange? The shape, or datum, that you choose will depend on the scope of your project (for instance, local vs.&nbsp;global) and the specific locations.</p>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>The projection is how these points are mathematically transformed to represent the georeferenced point on a flat piece of paper. Since you will visualize a 3D object onto a 2D space, there will be some distortions depending on the projection that you choose. Analogously, how do you peel the fruit (representing the Earth) and flatten the peel?</p>
+</div>
+</div>
+</div>
+<!-- end tabset -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/r_geospatial_vector_analysis/geospatial-gcs-pcs.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Source: <a href="https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/gcs_vs_pcs/">ESRI</a></figcaption>
+</figure>
+</div>
+<p>This <a href="https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/gcs_vs_pcs/">blog post</a> that explains these concepts in more detail with helpful diagrams and examples.</p>
+<p>You can view what <code>crs</code> is set by using the function <code>st_crs()</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(ak_rgns_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["latitude",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["longitude",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4326]]</code></pre>
+</details>
+<p>This looks pretty confusing. Without getting into the details, that long string says that this data has a geographic coordinate system (WGS84) with no projection.</p>
+<p>Every standard CRS has a short numeric EPSG code. The three you’ll use most in this lesson:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>EPSG</th>
+<th>Name</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>4326</td>
+<td>WGS84</td>
+<td>GPS coordinates, GeoJSON</td>
+</tr>
+<tr class="even">
+<td>3338</td>
+<td>Alaska Albers</td>
+<td>Alaskan data — equal-area, looks right</td>
+</tr>
+<tr class="odd">
+<td>3857</td>
+<td>Pseudo-Mercator</td>
+<td>Web tile maps (Google, OpenStreetMap)</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>st_transform()</code> to reproject. Our data currently uses WGS84 (EPSG:4326), which distorts Alaska badly near the antimeridian. Let’s switch to Alaska Albers (here we’ll add the EPSG to our object name, along with <code>_sf</code>, as a reminder):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ak_rgns_3338_sf <span class="ot">&lt;-</span> ak_rgns_sf <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3338</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># st_crs(ak_rgns_3338_sf) </span><span class="al">###</span><span class="co"> run in console to check</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Coordinate Reference System:
+  User input: EPSG:3338 
+  wkt:
+PROJCRS["NAD83 / Alaska Albers",
+    BASEGEOGCRS["NAD83",
+        DATUM["North American Datum 1983",
+            ELLIPSOID["GRS 1980",6378137,298.257222101,
+                LENGTHUNIT["metre",1]]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",4269]],
+    CONVERSION["Alaska Albers (meter)",
+        METHOD["Albers Equal Area",
+            ID["EPSG",9822]],
+        PARAMETER["Latitude of false origin",50,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8821]],
+        PARAMETER["Longitude of false origin",-154,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8822]],
+        PARAMETER["Latitude of 1st standard parallel",55,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8823]],
+        PARAMETER["Latitude of 2nd standard parallel",65,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8824]],
+        PARAMETER["Easting at false origin",0,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8826]],
+        PARAMETER["Northing at false origin",0,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8827]]],
+    CS[Cartesian,2],
+        AXIS["easting (X)",east,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["northing (Y)",north,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["Topographic mapping (small scale)."],
+        AREA["United States (USA) - Alaska."],
+        BBOX[51.3,172.42,71.4,-129.99]],
+    ID["EPSG",3338]]</code></pre>
+</details>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ak_rgns_3338_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Much better!</p>
+</section>
+</section>
+<section id="sf-the-tidyverse" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sf-the-tidyverse"><span class="header-section-number">6</span> <code>sf</code> &amp; the Tidyverse</h2>
+<p>Examine the class of our spatial data using <code>class()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(ak_rgns_3338_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>sf</code> objects should have (at least) two classes: <code>sf</code> and <code>data.frame</code>. Let’s look at their basic structure:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true"><code>head(ak_rgns_3338_sf)</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false"><code>glimpse(ak_rgns_3338_sf)</code></a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Simple feature collection with 6 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -2175328 ymin: 405653 xmax: 773820 ymax: 2383770
+Projected CRS: NAD83 / Alaska Albers
+# A tibble: 6 × 4
+  region_id region           mgmt_area                    geometry
+      &lt;int&gt; &lt;chr&gt;                &lt;dbl&gt;          &lt;MULTIPOLYGON [m]&gt;
+1         1 Aleutian Islands         3 (((-1156666 420855.1, -115…
+2         2 Arctic                   4 (((571289.9 2143072, 56994…
+3         3 Bristol Bay              3 (((-339688.6 973904.9, -33…
+4         4 Chignik                  3 (((-114381.9 649966.8, -11…
+5         5 Copper River             2 (((561012 1148301, 559393.…
+6         6 Kodiak                   3 (((115112.5 983293, 113051…</code></pre>
+</details>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Rows: 13
+Columns: 4
+$ region_id &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+$ region    &lt;chr&gt; "Aleutian Islands", "Arctic", "Bristol Bay", "…
+$ mgmt_area &lt;dbl&gt; 3, 4, 3, 3, 2, 3, 4, 4, 2, 4, 2, 1, 4
+$ geometry  &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((-1156666 42..., MULTIPOLYGON (…</code></pre>
+</details>
+</div>
+</div>
+</div>
+<p>Since our shapefile object has the <code>data.frame</code> class, all the usual <code>dplyr</code> and <code>tidyr</code> functions work on them, just as if we read in tabular data using <code>read.csv()</code> or <code>read_csv()</code>.</p>
+<p>But, unlike a typical <code>data.frame</code>, an <code>sf</code> object has an additional column typically named <code>geometry</code> that contains the spatial data. This <code>geometry</code> column is <strong>sticky</strong> - it will stick around even if you don’t explicitly ask for it. For example:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true"><code>select()</code> keeps <code>geometry</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false"><code>filter()</code> works as expected</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">### select keeps `region` AND `geometry` automatically</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ak_rgns_3338_sf <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(region) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Simple feature collection with 6 features and 1 field
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -2175328 ymin: 405653 xmax: 773820 ymax: 2383770
+Projected CRS: NAD83 / Alaska Albers
+# A tibble: 6 × 2
+  region                                                  geometry
+  &lt;chr&gt;                                         &lt;MULTIPOLYGON [m]&gt;
+1 Aleutian Islands (((-1156666 420855.1, -1159837 417990.3, -1161…
+2 Arctic           (((571289.9 2143072, 569941.5 2142691, 569158.…
+3 Bristol Bay      (((-339688.6 973904.9, -339302 972297.3, -3392…
+4 Chignik          (((-114381.9 649966.8, -112866.8 652065.8, -10…
+5 Copper River     (((561012 1148301, 559393.7 1148169, 557797.7 …
+6 Kodiak           (((115112.5 983293, 113051.3 982825.9, 110801.…</code></pre>
+</details>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="sourceCode" id="annotated-cell-37"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-37-1"><a href="#annotated-cell-37-1" aria-hidden="true" tabindex="-1"></a><span class="do">### filter() works exactly as expected!</span></span>
+<span id="annotated-cell-37-2"><a href="#annotated-cell-37-2" aria-hidden="true" tabindex="-1"></a>ak_rgns_3338_sf <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-37" data-target-annotation="1">1</button><span id="annotated-cell-37-3" class="code-annotation-target"><a href="#annotated-cell-37-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(region <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Arctic"</span>, <span class="st">"Kodiak"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-37" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-37" data-code-lines="3" data-code-annotation="1">Recall that <code>==</code> is problematic if you’re testing whether a variable might match multiple values - use <code>%in%</code> for that situation!</span>
+</dd>
+</dl>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Simple feature collection with 2 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -497326.7 ymin: 704730.2 xmax: 706032.5 ymax: 2383770
+Projected CRS: NAD83 / Alaska Albers
+# A tibble: 2 × 4
+  region_id region mgmt_area                              geometry
+*     &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;                    &lt;MULTIPOLYGON [m]&gt;
+1         2 Arctic         4 (((571289.9 2143072, 569941.5 214269…
+2         6 Kodiak         3 (((115112.5 983293, 113051.3 982825.…</code></pre>
+</details>
+</div>
+</div>
+</div>
+</section>
+<section id="spatial-joins" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="spatial-joins"><span class="header-section-number">7</span> Spatial Joins</h2>
+<p>We can also use the <code>sf</code> package to create spatial joins, useful for when you want to utilize two spatial datasets together.</p>
+<p>As an example, let’s explore the question: <strong>How many people live in each of these Alaska regions?</strong></p>
+<p>We have some population data that gives the population by city, not by region. To determine the population per region we will need to:</p>
+<ol type="1">
+<li>Read in the population data from a <code>csv</code> and turn it into an <code>sf</code> object</li>
+<li>Use a spatial join (<code>st_join()</code>) to match each city to a region</li>
+<li>Use <code>group_by()</code> and <code>summarize()</code> to calculate the total population by region</li>
+<li>Save the resulting spatial object using <code>write_sf()</code></li>
+</ol>
+<section id="download-the-population-data" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="download-the-population-data"><span class="header-section-number">7.1</span> Download the Population Data</h3>
+<p>As for the vector spatial data, let’s download the population data either programmatically or manually. Here we are downloading the full dataset, not a simplified one. Save it as <code>data/alaska_population.csv</code> (NOT in the <code>ak_regions</code> folder).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">Programmatic</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Manual</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<p>Copy and paste this into the console in Positron or RStudio to run it. Then check your <code>data</code> folder for the file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>out_file <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">'data/alaska_population.csv'</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(out_file)) {</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    pop_data_url <span class="ot">&lt;-</span> <span class="st">"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">download.file</span>(<span class="at">url =</span> pop_data_url, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">destfile =</span> out_file, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mode =</span> <span class="st">'w'</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>Navigate to <a href="https://knb.ecoinformatics.org/view/doi:10.5063/F11G0JHX">this dataset</a> on the KNB site and click the download button for the file called <code>household_language.csv</code>. (We’re only going to use the population data from this file)</p>
+<ul>
+<li>If on a local computer: Save it or move it into the current project as <code>data/alaska_population.csv</code>.</li>
+<li>If on a server: Upload the file to the <code>data</code> folder in the <code>training_{username}</code> project as <code>data/alaska_population.csv</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- end tabset -->
+</section>
+<section id="read-in-population-data" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="read-in-population-data"><span class="header-section-number">7.2</span> Read in Population Data</h3>
+<p>This dataset actually includes a lot more than just population by city - it also includes info on how many people in each city speak different languages. But for this example, we’ll just focus on the population column, using <code>dplyr</code> methods to filter for the most recent year of data (2015) and select the relevant columns.</p>
+<p>Here we’ll add a <code>_df</code> suffix to remind us that this is just a regular data frame, not a spatial data frame. It does contain spatial variables (longitude and latitude), but as far as it knows, those are just numbers, not recognized as spatial geometry… yet!</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pop_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data/alaska_population.csv"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2015</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(city, lat, lng, <span class="at">population =</span> total) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="turn-pop_df-into-a-spatial-object" class="level3" data-number="7.3">
+<h3 data-number="7.3" class="anchored" data-anchor-id="turn-pop_df-into-a-spatial-object"><span class="header-section-number">7.3</span> Turn <code>pop_df</code> Into a Spatial Object</h3>
+<p>Our dataframe has lat long values, which we will use to turn our population <code>data.frame</code> into an <code>sf</code> object.</p>
+<p>We can do this easily using the <code>st_as_sf()</code> function, which takes as arguments the coordinates and the <code>crs</code>. Although the CRS isn’t noted explicitly in the file, let’s assume that the lat long coordinates are in WGS84, or EPSG:4326, a very common CRS for lat-long data.</p>
+<p>Note that we’re adding a <code>_sf</code> suffix to our new object, because now it is a Simple Features spatial data frame!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>pop_4326_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(pop_df,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-2" class="code-annotation-target"><a href="#annotated-cell-11-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">'lng'</span>, <span class="st">'lat'</span>),</span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">crs =</span> <span class="dv">4326</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2">2</button><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">remove =</span> <span class="cn">FALSE</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="2" data-code-annotation="1">This refers to the associated column names in the dataframe; x is longitude, y is latitude.</span>
+</dd>
+<dt data-target-cell="annotated-cell-11" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="4" data-code-annotation="2"><code>remove = FALSE</code> overrides the default to drop the longitude/latitude columns; we’ll need those later!</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Note the <code>geometry</code> column for this contains points!</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pop_4326_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Simple feature collection with 6 features and 4 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -176.6581 ymin: 51.88 xmax: -154.1703 ymax: 62.68889
+Geodetic CRS:  WGS 84
+# A tibble: 6 × 5
+  city       lat   lng population             geometry
+  &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;          &lt;POINT [°]&gt;
+1 Adak      51.9 -177.        122    (-176.6581 51.88)
+2 Akhiok    56.9 -154.         84 (-154.1703 56.94556)
+3 Akiachak  60.9 -161.        562 (-161.4314 60.90944)
+4 Akiak     60.9 -161.        399 (-161.2139 60.91222)
+5 Akutan    54.1 -166.        899 (-165.7731 54.13556)
+6 Alakanuk  62.7 -165.        777 (-164.6153 62.68889)</code></pre>
+</details>
+</section>
+<section id="join-population-data-with-alaska-regions" class="level3" data-number="7.4">
+<h3 data-number="7.4" class="anchored" data-anchor-id="join-population-data-with-alaska-regions"><span class="header-section-number">7.4</span> Join Population Data with Alaska Regions</h3>
+<p>Now we can do our spatial join! We specify a “geometric predicate function” to determine how to match geometries - e.g., <code>st_intersects</code>, <code>st_within</code>, <code>st_crosses</code>, <code>st_is_within_distance</code> - in the <code>join</code> argument. The geometric predicate function you use will depend on what kind of operation you want to do, and the geometries of your shapefiles.</p>
+<p>In this case, we want to find what region (polygon) each city (point) falls within, so we will use <code>st_within</code>.</p>
+<p><strong>NOTE</strong>: Both geometries must use the same CRS - otherwise we get an error: <code>st_crs(x) == st_crs(y) is not TRUE</code>. So first we transform our population data from WGS84 (4326) to Alaska Albers (3338)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pop_3338_sf <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(pop_4326_sf, </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">crs =</span> <span class="dv">3338</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>pop_joined_sf <span class="ot">&lt;-</span> <span class="fu">st_join</span>(pop_3338_sf, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                         ak_rgns_3338_sf, </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">join =</span> st_within)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pop_joined_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code>Simple feature collection with 6 features and 7 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -1537925 ymin: 472626.9 xmax: -10340.71 ymax: 1456223
+Projected CRS: NAD83 / Alaska Albers
+# A tibble: 6 × 8
+  city    lat   lng population             geometry region_id
+  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;          &lt;POINT [m]&gt;     &lt;int&gt;
+1 Adak   51.9 -177.        122  (-1537925 472626.9)         1
+2 Akhi…  56.9 -154.         84 (-10340.71 770998.4)         6
+3 Akia…  60.9 -161.        562  (-400885.5 1236460)         8
+4 Akiak  60.9 -161.        399  (-389165.7 1235475)         8
+5 Akut…  54.1 -166.        899 (-766425.7 526057.8)         1
+6 Alak…  62.7 -165.        777  (-539724.9 1456223)        13
+# ℹ 2 more variables: region &lt;chr&gt;, mgmt_area &lt;dbl&gt;</code></pre>
+</details>
+<p>Each point from the city population data now includes a region name from the Alaska regions data. Note, only the point geometry is kept here! If we swapped the order of the datasets, we would keep the region geometry instead.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exploring types of join predicates
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Other useful join predicates include <code>st_intersects</code> (any overlap), <code>st_crosses</code> (lines crossing polygons), and <code>st_is_within_distance</code> (proximity). See <code>?st_within</code> for the full list.</p>
+</div>
+</div>
+</section>
+<section id="calculate-total-population-by-region" class="level3" data-number="7.5">
+<h3 data-number="7.5" class="anchored" data-anchor-id="calculate-total-population-by-region"><span class="header-section-number">7.5</span> Calculate Total Population by Region</h3>
+<p>Next we compute the total population for each region. In this case, we want to do a <code>group_by()</code> and <code>summarize()</code> as if this were a regular <code>data.frame</code>, without the spatial information - otherwise all of our point geometries would be included in the aggregation, which is not what we want. We remove the sticky geometry using <code>st_drop_geometry()</code>. Here we’re going to add a <code>_df</code> suffix because it’s no longer a spatial data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pop_rgn_df <span class="ot">&lt;-</span> pop_joined_sf <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_pop =</span> <span class="fu">sum</span>(population))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pop_rgn_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>
+Output (collapsed)
+</summary>
+<pre><code># A tibble: 6 × 2
+  region           total_pop
+  &lt;chr&gt;                &lt;dbl&gt;
+1 Aleutian Islands      8840
+2 Arctic                8419
+3 Bristol Bay           6947
+4 Chignik                311
+5 Cook Inlet          408254
+6 Copper River          2294</code></pre>
+</details>
+<p>And then we use a regular <code>left_join()</code> to connect the (non-spatial) population dataframe back to the Alaska region spatial dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pop_rgn_3338_sf <span class="ot">&lt;-</span> <span class="fu">left_join</span>(ak_rgns_3338_sf, </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                             pop_rgn_df, </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">by =</span> <span class="st">"region"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="do">### plot to check</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pop_rgn_3338_sf[<span class="st">"total_pop"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So far, we have learned how to use <code>sf</code> and <code>dplyr</code> to use a spatial join on two datasets and calculate a summary metric from the result of that join.</p>
+</section>
+<section id="dissolving-geometries-with-group_by-summarize" class="level3" data-number="7.6">
+<h3 data-number="7.6" class="anchored" data-anchor-id="dissolving-geometries-with-group_by-summarize"><span class="header-section-number">7.6</span> Dissolving Geometries with <code>group_by() %&gt;% summarize()</code></h3>
+<p>Say we want to calculate the population by Alaska management area, each of which contains multiple regions, instead of at the region level.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pop_mgmt_3338_sf <span class="ot">&lt;-</span> pop_rgn_3338_sf <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(mgmt_area) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_pop =</span> <span class="fu">sum</span>(total_pop))</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pop_mgmt_3338_sf[<span class="st">"total_pop"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the region geometries were combined into a single polygon for each management area. (The little irregular dots are a result of having simplified our vector data to reduce file sizes and computation time for this lesson).</p>
+<p>Set the argument <code>do_union = FALSE</code> inside <code>summarize()</code> to keep the original region polygons instead of dissolving them.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<code>sf</code> and <code>tidyverse</code> best practices
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>group_by()</code> and <code>summarize()</code> functions can also be used on <code>sf</code> objects to summarize within a dataset and combine geometries. Many of the <code>tidyverse</code> functions have methods specific for <code>sf</code> objects, some of which have additional arguments that wouldn’t be relevant to the <code>data.frame</code> methods. You can run <code>?sf::tidyverse</code> to get documentation on the <code>tidyverse</code> <code>sf</code> methods.</p>
+</div>
+</div>
+</section>
+<section id="save-the-spatial-object-to-a-new-file" class="level3" data-number="7.7">
+<h3 data-number="7.7" class="anchored" data-anchor-id="save-the-spatial-object-to-a-new-file"><span class="header-section-number">7.7</span> Save the Spatial Object to a New File</h3>
+<p>Save the spatial object using <code>write_sf()</code> and specifying the filename. The file extension controls the format (<code>.shp</code> = ESRI Shapefile, <code>.gpkg</code> = GeoPackage, <code>.geojson</code> = GeoJSON). GeoPackage is generally preferred over Shapefile for new work — it’s a single file, is filesize efficient, supports long field names, and handles multiple layers.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(pop_rgn_3338_sf, <span class="fu">here</span>(<span class="st">"data/ak_regions_population.gpkg"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="visualize-static-maps-with-ggplot2" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="visualize-static-maps-with-ggplot2"><span class="header-section-number">8</span> Visualize Static Maps with <code>ggplot2</code></h2>
+<p><code>ggplot2</code> has integrated functionality to plot <code>sf</code> objects using <code>geom_sf()</code>, using the information from the <code>geometry</code> column.</p>
+<p>We can plot any <code>sf</code> object using <code>geom_sf</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pop_rgn_3338_sf) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> total_pop)) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Total Population"</span>) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_continuous</span>(<span class="at">low =</span> <span class="st">"khaki"</span>, <span class="at">high =</span>  <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Layer multiple geometries exactly like regular <code>ggplot2</code>. Here it is best to separately assign each <code>data =</code> and <code>mapping = aes()</code> inside each <code>geom_sf</code> call. Later geoms are visually stacked on top of earlier geoms. Let’s read in and add a simplified rivers dataset to the plot (already downloaded with the Alaska regions, and already in EPSG:3338), along with cities from our <code>pop_3338_sf</code> data:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rivers_3338_sf <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">here</span>(<span class="st">"data/ak_regions/ak_rivers_simp.shp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-25-1"><a href="#annotated-cell-25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="annotated-cell-25-2"><a href="#annotated-cell-25-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data =</span> pop_rgn_3338_sf, </span>
+<span id="annotated-cell-25-3"><a href="#annotated-cell-25-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> total_pop)) <span class="sc">+</span></span>
+<span id="annotated-cell-25-4"><a href="#annotated-cell-25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data =</span> rivers_3338_sf,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="1">1</button><span id="annotated-cell-25-5" class="code-annotation-target"><a href="#annotated-cell-25-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">linewidth =</span> StrOrder),</span>
+<span id="annotated-cell-25-6"><a href="#annotated-cell-25-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">'blue'</span>, <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-25-7"><a href="#annotated-cell-25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>),</span>
+<span id="annotated-cell-25-8"><a href="#annotated-cell-25-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-25-9"><a href="#annotated-cell-25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data =</span> pop_3338_sf, <span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">'grey20'</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-25-10"><a href="#annotated-cell-25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total Population by Alaska Region"</span>,</span>
+<span id="annotated-cell-25-11"><a href="#annotated-cell-25-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill =</span> <span class="st">"Total Population"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-25-12"><a href="#annotated-cell-25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_continuous</span>(<span class="at">low =</span> <span class="st">"khaki"</span>,</span>
+<span id="annotated-cell-25-13"><a href="#annotated-cell-25-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">high =</span>  <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-25-14"><a href="#annotated-cell-25-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() </span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-25" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-25" data-code-lines="5,7" data-code-annotation="1">Stream order is aesthetically mapped to river line thickness - bigger rivers, thicker lines!</span>
+</dd>
+</dl>
+</div>
+</div>
+<section id="incorporate-base-maps-into-static-maps" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="incorporate-base-maps-into-static-maps"><span class="header-section-number">8.1</span> Incorporate Base Maps Into Static Maps</h3>
+<p>The <code>ggspatial</code> package has a function that can add tile layers from a few predefined tile sources like OpenStreetMap. Making sure that the tiles will plot correctly can be a finicky, so we will reproject our population data into the OpenStreetMap projection, Pseudo-Mercator (EPSG 3857), first.</p>
+<p>Then we will add <code>ggspatial::annotation_map_tile()</code> function to our plot to add a base map under our map (higher <code>zoom</code> argument means finer detail but slower loading time). We will also zoom in on Anchorage to show more detail of the map tile!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pop_3857_sf <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(pop_3338_sf, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">crs =</span> <span class="dv">3857</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> pop_3857_sf) <span class="sc">+</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    ggspatial<span class="sc">::</span><span class="fu">annotation_map_tile</span>(<span class="at">type =</span> <span class="st">"osm"</span>, <span class="at">zoom =</span> <span class="dv">6</span>, <span class="at">progress =</span> <span class="st">'none'</span>) <span class="sc">+</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># higher zoom values are more detailed </span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">color =</span> population),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">fill =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">16900000</span>, <span class="sc">-</span><span class="dv">16300000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">8400000</span>, <span class="dv">9000000</span>)) <span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_continuous</span>(<span class="at">low =</span> <span class="st">"darkkhaki"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">high =</span>  <span class="st">"firebrick"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Zoom in with <code>coord_sf()</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>coord_sf()</code> lets you zoom into a bounding box without subsetting your data:</p>
+<p><code>coord_sf(xlim = c(-500000, 600000), ylim = c(900000, 2000000))</code></p>
+</div>
+</div>
+</section>
+</section>
+<section id="visualize-interactive-maps-with-leaflet" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="visualize-interactive-maps-with-leaflet"><span class="header-section-number">9</span> Visualize Interactive Maps With <code>leaflet</code></h2>
+<p>We can also make an interactive map from our data above using <code>leaflet</code>.</p>
+<p><code>leaflet</code> builds interactive, pannable/zoomable maps. It handles reprojection internally, but <strong>expects data in WGS84 (EPSG:4326)</strong>. If you want to display in a custom projection (like Alaska Albers), you need <code>leaflet.extras</code> or the <code>proj4leaflet</code> plugin — for most use cases WGS84 is fine.</p>
+<section id="create-basic-leaflet-map" class="level3" data-number="9.1">
+<h3 data-number="9.1" class="anchored" data-anchor-id="create-basic-leaflet-map"><span class="header-section-number">9.1</span> Create Basic <code>leaflet</code> Map</h3>
+<p>Since <code>leaflet</code> requires that we use an unprojected coordinate system, let’s use <code>st_transform()</code> get our joined data again to get back to WGS84.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pop_rgn_4326_sf <span class="ot">&lt;-</span> pop_rgn_3338_sf <span class="sc">%&gt;%</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Like <code>ggplot</code> we first initialize the plot with <code>leaflet()</code> and then add features (basemaps, polygons, points) and themes (colors, labels, legends). Note, Leaflet layers are added using a pipe (<code>%&gt;%</code> or <code>|&gt;</code>) instead of a plus <code>+</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-29"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-29-1"><a href="#annotated-cell-29-1" aria-hidden="true" tabindex="-1"></a><span class="do">### set up a palette based on our colors</span></span>
+<span id="annotated-cell-29-2"><a href="#annotated-cell-29-2" aria-hidden="true" tabindex="-1"></a>pal <span class="ot">&lt;-</span> <span class="fu">colorNumeric</span>(<span class="at">palette =</span> <span class="st">"Reds"</span>, <span class="at">domain =</span> pop_rgn_4326_sf<span class="sc">$</span>total_pop)</span>
+<span id="annotated-cell-29-3"><a href="#annotated-cell-29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-29-4"><a href="#annotated-cell-29-4" aria-hidden="true" tabindex="-1"></a>pop_rgn_map <span class="ot">&lt;-</span> <span class="fu">leaflet</span>(<span class="at">data =</span> pop_rgn_4326_sf) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-29" data-target-annotation="1">1</button><span id="annotated-cell-29-5" class="code-annotation-target"><a href="#annotated-cell-29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(<span class="st">"CartoDB.Positron"</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-29" data-target-annotation="2">2</button><span id="annotated-cell-29-6" class="code-annotation-target"><a href="#annotated-cell-29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolygons</span>(</span>
+<span id="annotated-cell-29-7"><a href="#annotated-cell-29-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fillColor   =</span> <span class="sc">~</span><span class="fu">pal</span>(total_pop),           </span>
+<span id="annotated-cell-29-8"><a href="#annotated-cell-29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fillOpacity =</span> <span class="fl">0.8</span>,</span>
+<span id="annotated-cell-29-9"><a href="#annotated-cell-29-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">color       =</span> <span class="st">"white"</span>,</span>
+<span id="annotated-cell-29-10"><a href="#annotated-cell-29-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight      =</span> <span class="dv">1</span>,</span>
+<span id="annotated-cell-29-11"><a href="#annotated-cell-29-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">label       =</span> <span class="sc">~</span><span class="fu">paste0</span>(region, <span class="st">": "</span>, total_pop)</span>
+<span id="annotated-cell-29-12"><a href="#annotated-cell-29-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-29-13"><a href="#annotated-cell-29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addLegend</span>(</span>
+<span id="annotated-cell-29-14"><a href="#annotated-cell-29-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"bottomleft"</span>,</span>
+<span id="annotated-cell-29-15"><a href="#annotated-cell-29-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pal      =</span> pal,</span>
+<span id="annotated-cell-29-16"><a href="#annotated-cell-29-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">values   =</span> <span class="sc">~</span>total_pop,</span>
+<span id="annotated-cell-29-17"><a href="#annotated-cell-29-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Total Population"</span></span>
+<span id="annotated-cell-29-18"><a href="#annotated-cell-29-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-29-19"><a href="#annotated-cell-29-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-29-20"><a href="#annotated-cell-29-20" aria-hidden="true" tabindex="-1"></a>pop_rgn_map</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-29" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-29" data-code-lines="5" data-code-annotation="1">Add a basemap</span>
+</dd>
+<dt data-target-cell="annotated-cell-29" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-29" data-code-lines="6" data-code-annotation="2">Add polygons; here we are using the default data assigned inside <code>leaflet()</code></span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="add-cities-and-zoom-in" class="level3" data-number="9.2">
+<h3 data-number="9.2" class="anchored" data-anchor-id="add-cities-and-zoom-in"><span class="header-section-number">9.2</span> Add Cities and Zoom In</h3>
+<p>We can also add the individual communities, with popup labels showing their population, on top of that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-30"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-30" data-target-annotation="1">1</button><span id="annotated-cell-30-1" class="code-annotation-target"><a href="#annotated-cell-30-1" aria-hidden="true" tabindex="-1"></a>pop_rgn_map <span class="ot">&lt;-</span> pop_rgn_map <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-30-2"><a href="#annotated-cell-30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">addCircleMarkers</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-30" data-target-annotation="2">2</button><span id="annotated-cell-30-3" class="code-annotation-target"><a href="#annotated-cell-30-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">data        =</span> pop_4326_sf,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-30" data-target-annotation="3">3</button><span id="annotated-cell-30-4" class="code-annotation-target"><a href="#annotated-cell-30-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">radius      =</span> <span class="sc">~</span> <span class="fu">log</span>(population <span class="sc">/</span> <span class="dv">500</span>),</span>
+<span id="annotated-cell-30-5"><a href="#annotated-cell-30-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">fillColor   =</span> <span class="st">"gray"</span>,</span>
+<span id="annotated-cell-30-6"><a href="#annotated-cell-30-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">fillOpacity =</span> <span class="dv">1</span>,</span>
+<span id="annotated-cell-30-7"><a href="#annotated-cell-30-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight      =</span> <span class="fl">0.25</span>,</span>
+<span id="annotated-cell-30-8"><a href="#annotated-cell-30-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">color       =</span> <span class="st">"black"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-30" data-target-annotation="4">4</button><span id="annotated-cell-30-9" class="code-annotation-target"><a href="#annotated-cell-30-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">label       =</span> <span class="sc">~</span> <span class="fu">paste0</span>(pop_4326_sf<span class="sc">$</span>city,</span>
+<span id="annotated-cell-30-10"><a href="#annotated-cell-30-10" aria-hidden="true" tabindex="-1"></a>                               <span class="st">", population "</span>, </span>
+<span id="annotated-cell-30-11"><a href="#annotated-cell-30-11" aria-hidden="true" tabindex="-1"></a>                               pop_4326_sf<span class="sc">$</span>population)</span>
+<span id="annotated-cell-30-12"><a href="#annotated-cell-30-12" aria-hidden="true" tabindex="-1"></a>    ) </span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-30" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-30" data-code-lines="1" data-code-annotation="1">On top of everything in the previous map, we can keep adding layers directly</span>
+</dd>
+<dt data-target-cell="annotated-cell-30" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-30" data-code-lines="3" data-code-annotation="2">This overrides the default data from <code>leaflet()</code> to instead use the city points: <code>pop_4326_sf</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-30" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-30" data-code-lines="4" data-code-annotation="3">This is an arbitrary scaling of point size</span>
+</dd>
+<dt data-target-cell="annotated-cell-30" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-30" data-code-lines="9" data-code-annotation="4">Tooltip labels - hover over a city point to see the information!</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Before we plot, let’s zoom in two ways: focusing on a point and zoom level, and focusing on a bounding box.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Zoom in on Point</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Set Bounding Box</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<p>Here we focuson the Anchorage area using <code>setView()</code>, which takes a longitude, latitude, and zoom level (higher zoom = more detail). We can simply add it to the end of our map object. Here we pull the lat/long for Anchorage from our population data frame, but you could also just look it up and hardcode it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>anch_latlong <span class="ot">&lt;-</span> pop_df <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Anchorage"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(lat, lng)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>anch_latlong</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>pop_rgn_map <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setView</span>(<span class="at">lng =</span> anch_latlong<span class="sc">$</span>lng, <span class="at">lat =</span> anch_latlong<span class="sc">$</span>lat, <span class="at">zoom =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<p>Alternatively, we can zoom in on a bounding box using <code>fitBounds()</code>, which takes the longitude and latitude of two opposite corner points. Here we use <code>st_bbox()</code> to get those coordinates from our spatial dataframe of population by region, but there seems to be a <i class="fa-solid fa-bug" aria-label="bug"></i> bug if we pass those to <code>fitBounds()</code> as is. Here we coerce the bounding box coordinates to a format that <code>fitBounds()</code> can use (<code>as.numeric</code>), but you could also just look up the lat/long for the corners and hardcode them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ak_bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(pop_4326_sf) <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>()</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>pop_rgn_map <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fitBounds</span>(<span class="at">lng1 =</span> ak_bbox[<span class="dv">1</span>], <span class="at">lat1 =</span> ak_bbox[<span class="dv">2</span>],</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">lng2 =</span> ak_bbox[<span class="dv">3</span>], <span class="at">lat2 =</span> ak_bbox[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<!-- end panel-tabset -->
+</section>
+</section>
+<section id="geometry-operations-going-further" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="geometry-operations-going-further"><span class="header-section-number">10</span> Geometry Operations (Going Further)</h2>
+<p>The <code>sf</code> package includes a full suite of geometric operations beyond joins. A few you’ll reach for often:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>st_buffer(x, dist)</code></td>
+<td>Create a buffer zone around features</td>
+</tr>
+<tr class="even">
+<td><code>st_intersection(x, y)</code></td>
+<td>Clip <code>x</code> to the overlap with <code>y</code></td>
+</tr>
+<tr class="odd">
+<td><code>st_union(x)</code></td>
+<td>Merge all features into one</td>
+</tr>
+<tr class="even">
+<td><code>st_distance(x, y)</code></td>
+<td>Compute pairwise distances</td>
+</tr>
+<tr class="odd">
+<td><code>st_area(x)</code></td>
+<td>Calculate polygon area</td>
+</tr>
+<tr class="even">
+<td><code>st_centroid(x)</code></td>
+<td>Get the centroid point of each feature</td>
+</tr>
+<tr class="odd">
+<td><code>st_bbox(x)</code></td>
+<td>Return the bounding box</td>
+</tr>
+</tbody>
+</table>
+<p>Example — buffer cities by 50 km and find which regions they intersect:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>city_buffers <span class="ot">&lt;-</span> pop_3338_sf <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_buffer</span>(<span class="at">dist =</span> <span class="dv">50000</span>)   <span class="do">### distance in CRS units (meters for EPSG:3338)</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>buffered_rgns <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(city_buffers, ak_rgns_3338_sf)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(buffered_rgns <span class="sc">%&gt;%</span> <span class="fu">select</span>(region))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="more-spatial-resources" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="more-spatial-resources"><span class="header-section-number">11</span> More Spatial Resources</h2>
+<p>Here are some more great resources and tutorials for a deeper dive into working with spatial data in R:</p>
+<ul>
+<li><a href="https://github.com/r-spatial/sf">sf github repo</a> - scroll down to the README</li>
+<li><a href="https://r.geocompx.org/">Geocomputation with R</a> - online book on geographic data analysis, visualization, and modeling</li>
+<li><a href="https://rspatial.org/spatial/1-introduction.html">Spatial Data Science with R and <code>terra</code></a> - online book focusing on raster spatial data using the <code>terra</code> R package</li>
+<li><a href="https://r-spatial.org/book/">Spatial Data Science</a> - another online book, written by the people who created the <code>sf</code> package</li>
+<li><a href="https://rud.is/b/2017/09/18/mapping-fall-foliage-with-sf/">mapping-fall-foliage-with-sf</a> - an older resource, but a fun example of using <code>sf</code> and <code>ggplot2</code> to map and animate progress of fall foliage, for all you <i class="fa-solid fa-leaf" aria-label="leaf"></i> leaf-peepers <i class="fa-solid fa-leaf" aria-label="leaf"></i> out there</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/nceas-learning-hub\.github\.io\/lhCatalog\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright © 2026, NCEAS</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

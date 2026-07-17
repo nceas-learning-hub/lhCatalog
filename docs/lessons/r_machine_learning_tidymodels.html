@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Introduces the machine learning workflow in R using tidymodels, covering data partitioning, model fitting, cross-validation, model comparison, and hyperparameter tuning.">
+
+<title>Machine Learning with tidymodels – Learning Hub Lessons Catalog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../_extensions/nceas-learning-hub/theme/banner/logo_lh_hex.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-a295ad415f53c92ed3c0baa5ae267f41.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-04d35828442bc8f9a3bcb4b37829e7a4.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: #44444444;
+      }
+</style>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../_extensions/nceas-learning-hub/theme/banner/banner.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Learning Hub Lessons Catalog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-instructors" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Instructors</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-instructors">    
+        <li>
+    <a class="dropdown-item" href="https://www.oharascience.com/">
+ <span class="dropdown-text">Casey O’Hara</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/nceas-learning-hub/lhCatalog"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Machine Learning with <code>tidymodels</code></h1>
+                  <div>
+        <div class="description">
+          Introduces the machine learning workflow in R using tidymodels, covering data partitioning, model fitting, cross-validation, model comparison, and hyperparameter tuning.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">machine-learning</div>
+                <div class="quarto-category">tidymodels</div>
+                <div class="quarto-category">lecture</div>
+                <div class="quarto-category">advanced</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#machine-learning-overview" id="toc-machine-learning-overview" class="nav-link" data-scroll-target="#machine-learning-overview"><span class="header-section-number">2</span> Machine Learning Overview</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">3</span> Setup</a>
+  <ul class="collapse">
+  <li><a href="#intro-to-tidymodels-and-component-packages" id="toc-intro-to-tidymodels-and-component-packages" class="nav-link" data-scroll-target="#intro-to-tidymodels-and-component-packages"><span class="header-section-number">3.1</span> Intro to <code>tidymodels</code> and Component Packages</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview"><span class="header-section-number">3.2</span> Data Overview</a></li>
+  <li><a href="#attach-packages-and-load-data" id="toc-attach-packages-and-load-data" class="nav-link" data-scroll-target="#attach-packages-and-load-data"><span class="header-section-number">3.3</span> Attach Packages and Load Data</a></li>
+  </ul></li>
+  <li><a href="#data-partitioning" id="toc-data-partitioning" class="nav-link" data-scroll-target="#data-partitioning"><span class="header-section-number">4</span> Data Partitioning</a>
+  <ul class="collapse">
+  <li><a href="#manual-partitioning" id="toc-manual-partitioning" class="nav-link" data-scroll-target="#manual-partitioning"><span class="header-section-number">4.1</span> Manual Partitioning</a></li>
+  <li><a href="#partitioning-with-rsampleinitial_split" id="toc-partitioning-with-rsampleinitial_split" class="nav-link" data-scroll-target="#partitioning-with-rsampleinitial_split"><span class="header-section-number">4.2</span> Partitioning With <code>rsample::initial_split</code></a></li>
+  </ul></li>
+  <li><a href="#pre-processing-data-with-recipes" id="toc-pre-processing-data-with-recipes" class="nav-link" data-scroll-target="#pre-processing-data-with-recipes"><span class="header-section-number">5</span> Pre-Processing Data with <code>recipes</code></a></li>
+  <li><a href="#setting-up-a-model" id="toc-setting-up-a-model" class="nav-link" data-scroll-target="#setting-up-a-model"><span class="header-section-number">6</span> Setting Up A Model</a>
+  <ul class="collapse">
+  <li><a href="#assessing-model-performance" id="toc-assessing-model-performance" class="nav-link" data-scroll-target="#assessing-model-performance"><span class="header-section-number">6.1</span> Assessing Model Performance</a></li>
+  </ul></li>
+  <li><a href="#resampling-and-cross-validation" id="toc-resampling-and-cross-validation" class="nav-link" data-scroll-target="#resampling-and-cross-validation"><span class="header-section-number">7</span> Resampling and Cross Validation</a>
+  <ul class="collapse">
+  <li><a href="#cross-validation-manual-version" id="toc-cross-validation-manual-version" class="nav-link" data-scroll-target="#cross-validation-manual-version"><span class="header-section-number">7.1</span> Cross Validation: Manual Version</a></li>
+  <li><a href="#cross-validation-with-tidymodels" id="toc-cross-validation-with-tidymodels" class="nav-link" data-scroll-target="#cross-validation-with-tidymodels"><span class="header-section-number">7.2</span> Cross Validation with <code>tidymodels</code></a></li>
+  </ul></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">8</span> Model Selection</a>
+  <ul class="collapse">
+  <li><a href="#define-model-specifications" id="toc-define-model-specifications" class="nav-link" data-scroll-target="#define-model-specifications"><span class="header-section-number">8.1</span> Define Model Specifications</a></li>
+  <li><a href="#define-model-architecture" id="toc-define-model-architecture" class="nav-link" data-scroll-target="#define-model-architecture"><span class="header-section-number">8.2</span> Define Model Architecture</a></li>
+  <li><a href="#compare-models" id="toc-compare-models" class="nav-link" data-scroll-target="#compare-models"><span class="header-section-number">8.3</span> Compare Models</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">8.4</span> Results</a></li>
+  </ul></li>
+  <li><a href="#finalizing-the-model" id="toc-finalizing-the-model" class="nav-link" data-scroll-target="#finalizing-the-model"><span class="header-section-number">9</span> Finalizing the Model</a></li>
+  <li><a href="#optional-recipes-for-pre-processing" id="toc-optional-recipes-for-pre-processing" class="nav-link" data-scroll-target="#optional-recipes-for-pre-processing"><span class="header-section-number">10</span> Optional: Recipes for Pre-Processing</a></li>
+  <li><a href="#optional-model-tuning-for-improved-performance" id="toc-optional-model-tuning-for-improved-performance" class="nav-link" data-scroll-target="#optional-model-tuning-for-improved-performance"><span class="header-section-number">11</span> Optional: Model Tuning for Improved Performance</a>
+  <ul class="collapse">
+  <li><a href="#common-model-tuning-algorithms" id="toc-common-model-tuning-algorithms" class="nav-link" data-scroll-target="#common-model-tuning-algorithms"><span class="header-section-number">11.1</span> Common Model Tuning Algorithms</a></li>
+  <li><a href="#tuning-model-hyperparameters" id="toc-tuning-model-hyperparameters" class="nav-link" data-scroll-target="#tuning-model-hyperparameters"><span class="header-section-number">11.2</span> Tuning Model Hyperparameters</a></li>
+  </ul></li>
+  <li><a href="#optional-model-interpretation" id="toc-optional-model-interpretation" class="nav-link" data-scroll-target="#optional-model-interpretation"><span class="header-section-number">12</span> Optional: Model Interpretation</a></li>
+  <li><a href="#exercise-create-a-regression-model" id="toc-exercise-create-a-regression-model" class="nav-link" data-scroll-target="#exercise-create-a-regression-model"><span class="header-section-number">13</span> Exercise: Create a Regression Model</a>
+  <ul class="collapse">
+  <li><a href="#load-bison-data" id="toc-load-bison-data" class="nav-link" data-scroll-target="#load-bison-data"><span class="header-section-number">13.1</span> Load bison data</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<!--
+Prerequisite lessons: 
+* tidy data
+* 
+-->
+<div class="callout callout-style-default callout-learning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-learning">
+<p>After completing this session, you will be able to:</p>
+<ul>
+<li>Explain the purpose of partitioning data into training, validation/assessment, and test sets, and describe why this practice helps prevent overfitting</li>
+<li>Apply <code>rsample::initial_split()</code> and <code>rsample::vfold_cv()</code> to partition and resample a dataset</li>
+<li>Construct classification models using <code>parsnip</code>, applying a consistent syntax across multiple algorithms</li>
+<li>Evaluate model performance using appropriate classification metrics</li>
+<li>Compare multiple model specifications and algorithms using cross-validated performance metrics to select a best-performing model.</li>
+<li>Distinguish between model parameters and hyperparameters, and describe at a conceptual level how tuning strategies search hyperparameter space</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<p>Machine Learning (ML) is an intersection between statistics and computer science in which we train computers to learn directly from data without relying on hard-coded rules - identifying patterns, using those patterns to make predictions, then testing those predictions to refine future predictions. ML enables scientists to process, integrate, and analyze datasets across biological, environmental, and socioeconomic domains, helping identify ecological patterns and trends to inform conservation decisions.</p>
+<p>Machine learning can range from “stats 101” concepts like linear regression and principal component analysis, to cutting-edge neural networks and transformer models that underpin social media recommendations, large language models, and generative AI.</p>
+<p>In this lesson we will explore machine learning in R by applying the <code>tidymodels</code> framework to some relatively simple, intuitive datasets and algorithms.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Scope: Machine Learning Process, not Algorithms
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><a href="images/r_machine_learning_tidymodels/all_ml.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/r_machine_learning_tidymodels/all_ml.jpg" class="img-fluid" style="width:95.0%" alt="Mind map diagram with 'Machine Learning' at the center branching into four categories: Classical Learning (unsupervised: clustering, pattern search, dimension reduction; supervised: classification, regression), Ensemble Methods (bagging, stacking, boosting), Neural Nets and Deep Learning (CNN, RNN, GAN, autoencoders, perceptrons), and Reinforcement Learning"></a></p>
+</div><div class="column" style="width:70%;">
+<p><br><br> There are far too many possible machine learning algorithms spread across too many R packages to discuss in depth here. Instead, we will focus on a general framework for machine learning that is broadly applicable across model types and algorithms.</p>
+</div>
+</div>
+<!-- end columns -->
+</div>
+</div>
+<!-- end callout-tip -->
+<!-- ## Data for Exercises -->
+<!-- LAND COVER DATA FOR CLASSIFICATION https://archive.ics.uci.edu/static/public/31/covertype.zip citation: Blackard, J. (1998). Covertype [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C50K5N. -->
+<!-- :::{.callout-note collapse=true} -->
+<!-- ### About the data -->
+<!-- https://archive.ics.uci.edu/dataset/31/covertype -->
+<!-- Predicting forest cover type from cartographic variables only (no remotely sensed data).  The actual forest cover type for a given observation (30 x 30 meter cell) was determined from US Forest Service (USFS) Region 2 Resource Information System (RIS) data.  Independent variables were derived from data originally obtained from US Geological Survey (USGS) and USFS data.  Data is in raw form (not scaled) and contains binary (0 or 1) columns of data for qualitative independent variables (wilderness areas and soil types). -->
+<!-- This study area includes four wilderness areas located in the Roosevelt National Forest of northern Colorado.  These areas represent forests with minimal human-caused disturbances, so that existing forest cover types are more a result of ecological processes rather than forest management practices. -->
+<!-- ::: -->
+</section>
+<section id="machine-learning-overview" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="machine-learning-overview"><span class="header-section-number">2</span> Machine Learning Overview</h2>
+<p><a href="slides/r_machine_learning_tidymodels/slides1_machine_learning.html" target="_blank">Full Screen</a></p>
+<iframe class="slide-deck" src="slides/r_machine_learning_tidymodels/slides1_machine_learning.html" style="border: 1px solid #2e3846;"></iframe>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+An Entertaining Reference
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>https://vas3k.com/blog/machine_learning/ - This entertaining and informative high-level overview of machine learning, in a similar vein to <a href="https://xkcd.com/">XKCD</a> or <a href="https://waitbutwhy.com/">Wait but Why</a>, provides conceptual descriptions of how various ML algorithms work and concrete real-world examples of how you might encounter them in the wild.</p>
+</div>
+</div>
+</section>
+<section id="setup" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="setup"><span class="header-section-number">3</span> Setup</h2>
+<section id="intro-to-tidymodels-and-component-packages" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="intro-to-tidymodels-and-component-packages"><span class="header-section-number">3.1</span> Intro to <code>tidymodels</code> and Component Packages</h3>
+<p>Dozens, maybe hundreds of R packages exist that implement various machine learning techniques, but most of these packages rely on idiosyncratic data input requirements, custom model formats, and different default parameters, making it difficult to use models interchangeably. The <code>tidymodels</code> metapackage and framework do the hard work of consolidating the most popular and frequently used machine learning packages with consistent syntax, inputs, and outputs.</p>
+<p>Like the <code>tidyverse</code>, the <code>tidymodels</code> package is actually a collection of many sub-packages each with its own area of expertise. Some of the core packages:</p>
+<ul>
+<li><code>rsample</code>: Handles data splitting and resampling - divide data into training and testing sets, select cross-validation folds, and perform bootstrap sampling for validating model performance</li>
+<li><code>parsnip</code>: Provides a unified, consistent interface for model training - use <code>parsnip</code> functions to specify the model type (e.g., “random forest”) and computational engine (e.g., choose random forest implementation in <code>ranger</code> vs <code>randomForest</code> packages), while maintaining consistent input formats and output formats</li>
+<li><code>workflows</code>: Bundles your data preprocessing steps (<code>recipes</code>) and your model specifications (<code>parsnip</code>) into a single, cohesive object - streamlining the process of fitting and predicting across multiple model algorithms and specifications</li>
+<li><code>yardstick</code>: Evaluates model performance - metrics like accuracy, RMSE (Root Mean Square Error), and ROC AUC to test the predictive power of ML models</li>
+</ul>
+</section>
+<section id="data-overview" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="data-overview"><span class="header-section-number">3.2</span> Data Overview</h3>
+<p>Many machine learning algorithms feel pretty much like a “black box”: <strong>data</strong> <i class="fa-solid fa-arrow-right" aria-label="arrow-right"></i> <span style="color:black; background: black;"><strong>secret magic</strong></span> <i class="fa-solid fa-arrow-right" aria-label="arrow-right"></i> <strong>wisdom</strong>. To help develop an intuition of the machine learning process (if not quite the algorithms), we will use a simple and familiar dataset, the <code>palmerpenguins</code> dataset. We will focus on a <strong>classification</strong> task: identifying the sex of a penguin (harder than it sounds!) from readily observed biometric characteristics.</p>
+</section>
+<section id="attach-packages-and-load-data" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="attach-packages-and-load-data"><span class="header-section-number">3.3</span> Attach Packages and Load Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">### install packages for ML algorithm engines</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages('ranger')</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages('kernlab')</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">### Load package for penguins data</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>penguins_clean <span class="ot">&lt;-</span> penguins <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">### convert characters to factors - generally easier for modeling engines!</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">factor</span>(species), <span class="at">sex =</span> <span class="fu">factor</span>(sex), <span class="at">island =</span> <span class="fu">factor</span>(island))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># table(penguins_clean$sex)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># # female   male </span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># #    165    168 </span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># table(penguins_clean$species)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># # Adelie Chinstrap    Gentoo </span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># #    146        68       119 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="data-partitioning" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="data-partitioning"><span class="header-section-number">4</span> Data Partitioning</h2>
+<p>One fundamental task of machine learning is dividing data into several discrete, non-overlapping bundles, so we can train our algorithms on one set and then test it against another set. These slides give an overview of why this is important and what the overall machine learning process looks like.</p>
+<p><a href="slides/r_machine_learning_tidymodels/slides2_partitioning.html" target="_blank">Full Screen</a></p>
+<iframe class="slide-deck" src="slides/r_machine_learning_tidymodels/slides2_partitioning.html" style="border: 1px solid #2e3846;"></iframe>
+<section id="manual-partitioning" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="manual-partitioning"><span class="header-section-number">4.1</span> Manual Partitioning</h3>
+<p>For conceptual understanding, let’s see one way of manually partitioning our data, by randomly assigning observations to each of Training, Validation, and Testing partitions with approximate proportions of 70/15/15:</p>
+<ul>
+<li>Create a vector with bins allocated in our desired proportions</li>
+<li>Randomly assign samples from that vector to each of our observations</li>
+<li>Create separate data frames by filtering on those bins.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bins <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">'analysis'</span>, <span class="dv">70</span>), <span class="fu">rep</span>(<span class="st">'assessment'</span>, <span class="dv">15</span>), <span class="fu">rep</span>(<span class="st">'test'</span>, <span class="dv">15</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="do">### so we all get the same results each time</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>part_df <span class="ot">&lt;-</span> penguins_clean <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">partition =</span> <span class="fu">sample</span>(bins, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="fu">n</span>()))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># table(part_df$partition) / nrow(part_df)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  analysis assessment       test </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.6786787  0.1531532  0.1681682 </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>analysis_df <span class="ot">&lt;-</span> part_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(partition <span class="sc">==</span> <span class="st">'analysis'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>assess_df <span class="ot">&lt;-</span> part_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(partition <span class="sc">==</span> <span class="st">'assessment'</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>test_df  <span class="ot">&lt;-</span> part_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(partition <span class="sc">==</span> <span class="st">'test'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We elided the resample step, jumping straight to analysis and assessment sets - so now our data look like:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[(penguins_clean)] --&gt; B[/training/]
+  A --&gt; C[/test_df/]
+  B --&gt; D[resample]
+  D --&gt; D1[/analysis_df/]
+  D --&gt; D2[/assess_df/]
+  
+  classDef resampleNode fill:#eeeeee,stroke:#dddddd,color:#aaaaaa
+
+  class B,D resampleNode
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Stratified Partitioning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Often our data is imbalanced, meaning certain values of our outcome variable show up far more frequently than others - for example, rare species will show up far less frequently in a field study than common species. In such cases, it is a good practice to do “stratified partitioning” to ensure that the proportions of outcome categories within each partition are similar to the proportions in the overall dataset.</p>
+<p>It is also sometimes useful to stratify on predictors, to maintain class balance for critical subgroups. In our <code>penguins</code> dataset, there are more than twice as many Adelies as Chinstraps, while male and female are approximately equally represented.</p>
+<p>Stratified partitioning would make our manual code far more complicated, but it is very easy to do in <code>tidymodels</code>.</p>
+</div>
+</div>
+</section>
+<section id="partitioning-with-rsampleinitial_split" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="partitioning-with-rsampleinitial_split"><span class="header-section-number">4.2</span> Partitioning With <code>rsample::initial_split</code></h3>
+<p>Partition the penguins data, with 85% going into our training set (which we will resample later as 70%-15%), and 15% set aside for final testing. Our outcome variable, <code>sex</code>, is already pretty balanced, so instead we will stratify on the <code>species</code> column (<code>strata = species</code>), so each species will have the same proportional representation in our training and test sets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>peng_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(penguins_clean, <span class="at">prop =</span> <span class="fl">0.85</span>, <span class="at">strata =</span> species)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>peng_train_df <span class="ot">&lt;-</span> <span class="fu">training</span>(peng_split)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>peng_test_df  <span class="ot">&lt;-</span> <span class="fu">testing</span>(peng_split)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># table(peng_test_df$species) / nrow(peng_test_df); table(peng_train_df$species) / nrow(peng_train_df)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># #    Adelie Chinstrap    Gentoo;      Adelie Chinstrap    Gentoo</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # 0.4313725 0.2156863 0.3529412;   0.4397163 0.2021277 0.3581560</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># table(peng_test_df$sex) / nrow(peng_test_df); table(peng_train_df$sex) / nrow(peng_train_df)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># #    female      male;      female      male</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # 0.6078431 0.3921569;   0.4751773 0.5248227 </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At this point our data look like:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[(penguins_clean)] --&gt; B[/peng_train_df/]
+  A --&gt; C[/peng_test_df/]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+When should we worry about imbalanced data?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Generally we only really need to be concerned when one class (e.g., one species or sex) only makes up ~10% or less of a dataset. For small datasets like <code>palmerpenguins</code> (n = ~330), imbalance is especially problematic - for example, if one species made up only 5% of observations, we would have only 16-17 observations (further divided among the training and testing splits) for our model to “learn” the patterns.</p>
+<p><strong>BUT:</strong> stratifying your samples never <em>hurts</em> so when in doubt, stratify!</p>
+</div>
+</div>
+<p>Let’s further partition our <em>training</em> split into <em>analysis</em> and <em>assessment</em> sets. To get the 85% <em>training</em> set separated into 70% and 15% accordingly, we can use proportions. Let’s stratify on <code>sex</code> again!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>peng_train_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(peng_train_df, <span class="at">prop =</span> <span class="dv">70</span><span class="sc">/</span><span class="dv">85</span>, <span class="at">strata =</span> sex)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>peng_analysis <span class="ot">&lt;-</span> <span class="fu">training</span>(peng_train_split)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>peng_assess   <span class="ot">&lt;-</span> <span class="fu">testing</span>(peng_train_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our data now looks like:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[(penguins_clean)] --&gt; B[/peng_train_df/]
+  A --&gt; C[/peng_test_df/]
+  B --&gt; D[Resample]
+  D --&gt; D1[/peng_analysis/]
+  D --&gt; D2[/peng_assess/]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="pre-processing-data-with-recipes" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="pre-processing-data-with-recipes"><span class="header-section-number">5</span> Pre-Processing Data with <code>recipes</code></h2>
+<p>Our data are already pretty clean and well formed - no obvious outliers in our continuous data, few <code>NA</code> values (which have been dropped), and consistent levels in our categorical variables.</p>
+<p><strong>This is not always the case!</strong> More often than not, data requires a bit of pre-processing. The <a href="https://www.tidymodels.org/start/recipes/"><code>tidymodels</code> “Get Started” resource</a> gives some common examples:</p>
+<blockquote class="blockquote">
+<ul>
+<li>converting qualitative predictors to indicator variables (also known as dummy variables),</li>
+<li>transforming data to be on a different scale (e.g., taking the logarithm of a variable),</li>
+<li>transforming whole groups of predictors together,</li>
+<li>extracting key features from raw variables (e.g., getting the day of the week out of a date variable)</li>
+</ul>
+</blockquote>
+<p>The <code>recipes</code> package within <code>tidymodels</code> provides an extensive set of functions for detailed pre-processing, using the familiar piped workflow a la <code>tidyverse</code> (<code>%&gt;%</code> or <code>|&gt;</code>).</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Preprocess with <code>recipes</code> AFTER partitioning!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The point of data partitioning is to prevent “data leakage”, i.e., letting any information about the final <em>testing</em> data sneak into the <em>training</em> data. However, some pre-processing steps involve summary statistics (e.g., mean and standard deviation) that, if used <em>before</em> partitioning, would also influence the testing partition, not just the training partition.</p>
+<p>Instead, partition into training (analysis/assessment) and test sets, then apply the preprocessing recipe to just the training data to build the model.</p>
+</div>
+</div>
+<p>As noted, our data are already pretty clean, so we will skip this step for brevity - see this <a href="https://recipes.tidymodels.org/articles/recipes.html">handy reference article</a> and <a href="https://recipes.tidymodels.org/reference/index.html">extensive documentation</a> elsewhere to see the many many options!</p>
+</section>
+<section id="setting-up-a-model" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="setting-up-a-model"><span class="header-section-number">6</span> Setting Up A Model</h2>
+<p>Hundreds of modeling algorithms are available across many different R packages; while they share similarities, they also include idiosyncratic object formats and methods. The <code>parsnip</code> package within <code>tidymodels</code> provides access to modeling algorithms while enforcing a consistent syntax.</p>
+<p>For our classification task, let’s start with a logistic regression model; various packages and functions provide logistic regression, but we’ll stick with the basic engine from the <code>stats::glm</code> function.</p>
+<ul>
+<li>Define the model type (and “engine” i.e., the source of the algorithm, if desired)</li>
+<li>Specify a model with dependent and independent variables, and use <code>parsnip::fit()</code> to train the data</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>blr_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'glm'</span>) <span class="do">### this is the default - we could try engines from other packages or functions</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>peng_fit1 <span class="ot">&lt;-</span> blr_mdl <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Specify a model with all biometric predictor variables</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">fit</span>(sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> peng_analysis)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>peng_fit2 <span class="ot">&lt;-</span> blr_mdl <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Specify a model with a sub set of biometric predictor variables</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> peng_analysis)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="do">### let's also create a model we know will be bad:</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>peng_fit3 <span class="ot">&lt;-</span> blr_mdl <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Specify a model with predictors that are likely low value</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(sex <span class="sc">~</span> species <span class="sc">+</span> island <span class="sc">+</span> year, <span class="at">data =</span> peng_analysis)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># broom::tidy(peng_fit1)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># broom::tidy(peng_fit2)</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># broom::tidy(peng_fit3)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="assessing-model-performance" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="assessing-model-performance"><span class="header-section-number">6.1</span> Assessing Model Performance</h3>
+<p>Now we can use our models to predict classifications in our <code>peng_assess_df</code> and judge the prediction quality in several ways. For a classification task, we look at how well it discriminates between our two classes (e.g., accuracy, false positives vs.&nbsp;false negatives). For a regression task, we look at minimizing the error between our predictions and the observed values (e.g., sum of squared error (SSE), root-mean-squared error (RMSE)).</p>
+<p>Let’s compare our first model and our garbage model with several classification metrics.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>peng_pred1 <span class="ot">&lt;-</span> peng_assess <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(peng_fit1, <span class="at">new_data =</span> ., <span class="at">type =</span> <span class="st">'class'</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>peng_pred3 <span class="ot">&lt;-</span> peng_assess <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(peng_fit3, <span class="at">new_data =</span> ., <span class="at">type =</span> <span class="st">'class'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+“Positive” vs.&nbsp;“Negative” for Classification Tasks
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In basic classification, we are discriminating between two potential values of a categorical variable. These two values are typically generalized as Positive vs.&nbsp;Negative. These are often arbitrary but knowing which is which is critical to understanding your outcomes. Examples:</p>
+<ul>
+<li>Medical Diagnosis: Positive = Has Disease / Negative = Healthy</li>
+<li>Spam Detection: Positive = Spam / Negative = Normal Email</li>
+<li>Fraud Detection: Positive = Fraud / Negative = Legit Transaction.</li>
+</ul>
+<p>In our case, because we treat <code>sex</code> as a factor and <code>female</code> is alphabetically before <code>male</code>, R by default will treat <code>female</code> as Negative and <code>male</code> as Positive. We could force this the other way (e.g., setting factor levels), but it will not affect our overall outcomes.</p>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Confusion Matrix</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Accuracy</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">ROC Curve and AUC</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>For classification problems, a “confusion matrix” shows True Positives and Negatives vs.&nbsp;False Positives and Negatives. True female (<code>sex</code>) vs.&nbsp;predicted female (<code>.pred_class</code>) = True Negative; true male/predicted female = False Negative; male/male = True Positive; female/male = False Positive.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>peng_pred1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(sex, .pred_class) <span class="sc">%&gt;%</span> <span class="fu">table</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>peng_pred3 <span class="sc">%&gt;%</span> <span class="fu">select</span>(sex, .pred_class) <span class="sc">%&gt;%</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>peng_pred1</code> has a good True Positive Rate and True Negative Rate; <code>peng_pred3</code> has very high False Positive and False Negative Rates.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>For classification problems, “accuracy” is just the proportion of correct predictions, without worrying about which direction those predictions went (True Positive or True Negative).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">accuracy</span>(peng_pred1, <span class="at">truth =</span> sex, <span class="at">estimate =</span> .pred_class)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">accuracy</span>(peng_pred3, <span class="at">truth =</span> sex, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>A Receiver Operating Characteristic (ROC) curve plots the tradeoff between the True Positive Rate and False Positive Rate as we change the probability threshold for classifying something as class 1 (vs.&nbsp;class 0) - in our case, classifying a penguin as male.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/roc_auc.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="images/r_machine_learning_tidymodels/roc_auc.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="ROC curve diagram plotting True Positive Rate vs. False Positive Rate for three classifiers (blue best, orange middle, green worst) against a red dashed diagonal baseline representing a random classifier. Labels indicate curves closer to the upper-left are better; the perfect classifier point is marked at (0, 1.0)"></a></p>
+</figure>
+</div>
+<p>A low threshold means that, even at very low predicted probabilities, we assign “Male” - which means we get most of the males (high True Positive Rate), but we also assign many (true) females to be (false) males (high False Positive Rate). A high threshold means we need a high predicted probability to classify a penguin as male - meaning we err on the side of classifying as female, i.e., a high True Negative Rate - and misclassify many males as females (high False Negative Rate).</p>
+<p>Often we don’t even look at the curve, but instead just the area under the curve (AUC) - the ROC curve of a great model will approach the top left of the plot, while a bad model will be close to the diagonal.</p>
+<p>To calculate ROC AUC (and the ROC curve) we need not just the predicted classes, but the <em>probabilities</em> associated with the predictions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1" aria-hidden="true" tabindex="-1"></a>peng_prob1 <span class="ot">&lt;-</span> peng_assess <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-21-2"><a href="#annotated-cell-21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(peng_fit1, <span class="at">new_data =</span> ., <span class="at">type =</span> <span class="st">'prob'</span>))</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-3" class="code-annotation-target"><a href="#annotated-cell-21-3" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">roc_auc</span>(peng_prob1, <span class="at">truth =</span> sex, .pred_female, <span class="at">event_level =</span> <span class="st">'first'</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="2">2</button><span id="annotated-cell-21-4" class="code-annotation-target"><a href="#annotated-cell-21-4" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">roc_auc</span>(peng_prob1, <span class="at">truth =</span> sex, .pred_male, <span class="at">event_level =</span> <span class="st">'second'</span>)</span>
+<span id="annotated-cell-21-5"><a href="#annotated-cell-21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-21-6"><a href="#annotated-cell-21-6" aria-hidden="true" tabindex="-1"></a>peng_prob3 <span class="ot">&lt;-</span> peng_assess <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-21-7"><a href="#annotated-cell-21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(peng_fit3, <span class="at">new_data =</span> ., <span class="at">type =</span> <span class="st">'prob'</span>))</span>
+<span id="annotated-cell-21-8"><a href="#annotated-cell-21-8" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">roc_auc</span>(peng_prob3, <span class="at">truth =</span> sex, .pred_female, <span class="at">event_level =</span> <span class="st">'first'</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-21" data-code-lines="3" data-code-annotation="1">Here, <code>event_level</code> defines whether we’re looking for the first or second class (female/male in our case), and the <code>.pred_XXX</code> should match the event level.</span>
+</dd>
+<dt data-target-cell="annotated-cell-21" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-21" data-code-lines="4" data-code-annotation="2">Here we swap for <code>event_level = 'second'</code> and look to <code>.pred_male</code> for our probabilities.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>We can also plot the ROC Curve!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>roc1_df <span class="ot">&lt;-</span> yardstick<span class="sc">::</span><span class="fu">roc_curve</span>(peng_prob1, <span class="at">truth =</span> sex, .pred_female)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>roc3_df <span class="ot">&lt;-</span> yardstick<span class="sc">::</span><span class="fu">roc_curve</span>(peng_prob3, <span class="at">truth =</span> sex, .pred_female)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> roc1_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">'black'</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> roc3_df, <span class="at">color =</span> <span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="resampling-and-cross-validation" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="resampling-and-cross-validation"><span class="header-section-number">7</span> Resampling and Cross Validation</h2>
+<p>With resampling, we do multiple rounds of partitioning with our training data - iteratively resampling <em>analysis</em> and <em>assessment</em> partitions. Cross validation (CV) is a specific type of resampling - we create multiple equal-sized partitions, called <em>folds</em>, and then set aside one fold as <em>assessment</em> and the remaining folds as <em>analysis</em> to train our data, then use the second fold as <em>assessment</em> etc. If we split our data into five <em>folds</em> we get “five-fold cross validation” - the generic term is K-fold cross validation.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/fivefold_cv.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="images/r_machine_learning_tidymodels/fivefold_cv.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="Diagram titled 'One iteration of a 5-fold cross-validation' showing five rows (folds 1–5). In each row, one contiguous segment of the data is held out as the test set while the remaining four segments form the training set, cycling through all five possible positions"></a></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+How Many Folds?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Five- and ten-fold CV are basically industry standard - balancing computational effort with accurate performance evaluation, but more art than science. More folds –&gt; less bias, but higher computational cost. Another method, generally only used for small data sets, is <em>n</em>-fold where each observation is its own fold (<span class="math inline">\(k = N\)</span>, also called “Leave-One-Out Cross Validation” (LOOCV) since each iteration <em>leaves out</em> one observation as the <em>assessment</em> set).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Repeated Cross-Validation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Often, after completing one set of cross-validation, we shuffle the observations into a new set of folds and do it all again, iterating many times - “repeated k-fold cross validation”. Repeated CV helps improve consistency of our evaluation metrics – a single round of CV might be prone to an exceptionally lucky (or unlucky) resample, so multiple repeats will help balance that out.</p>
+<p>How many repeats? Like folds, choosing a number is more art than science - but ten is a good starting point, and if the model is pretty unstable (high variance from repeat to repeat) 50-100 repeats is not uncommon.</p>
+</div>
+</div>
+<section id="cross-validation-manual-version" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="cross-validation-manual-version"><span class="header-section-number">7.1</span> Cross Validation: Manual Version</h3>
+<p>For conceptual understanding, five-fold cross validation on our training set <code>peng_train_df</code> might look like this:</p>
+<ul>
+<li>Randomly assign each observation to a fold</li>
+<li>Set fold 1 aside as <em>assessment</em>, and folds 2-5 as <em>analysis</em>
+<ul>
+<li>Train the desired model on <em>analysis</em></li>
+<li>Use trained model to predict on <em>assessment</em></li>
+<li>Calculate some metric of predictive power, e.g., accuracy for classification or RMSE for regression</li>
+<li>Store the metric in a vector</li>
+</ul></li>
+<li>Repeat for the remaining folds</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>fold_vec <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">nrow</span>(peng_train_df))</span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>peng_folds_df <span class="ot">&lt;-</span> peng_train_df <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold =</span> <span class="fu">sample</span>(fold_vec, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">size =</span> <span class="fu">n</span>()))</span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>blm1_results_vec <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">5</span>)</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>  assess_df <span class="ot">&lt;-</span> peng_folds_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold <span class="sc">==</span> i)</span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>  analysis_df <span class="ot">&lt;-</span> peng_folds_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold <span class="sc">!=</span> i)</span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-hidden="true" tabindex="-1"></a>  blm1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">family =</span> <span class="st">'binomial'</span>, </span>
+<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12" aria-hidden="true" tabindex="-1"></a>              sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm, </span>
+<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> analysis_df)</span>
+<span id="annotated-cell-7-14"><a href="#annotated-cell-7-14" aria-hidden="true" tabindex="-1"></a>  pred_blm1 <span class="ot">&lt;-</span> assess_df <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-15" class="code-annotation-target"><a href="#annotated-cell-7-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(blm1, <span class="at">newdata =</span> ., <span class="at">type =</span> <span class="st">'response'</span>),</span>
+<span id="annotated-cell-7-16"><a href="#annotated-cell-7-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">pred_sex =</span> <span class="fu">ifelse</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="st">'male'</span>, <span class="st">'female'</span>))</span>
+<span id="annotated-cell-7-17"><a href="#annotated-cell-7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-18"><a href="#annotated-cell-7-18" aria-hidden="true" tabindex="-1"></a>  acc_blm1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred_blm1<span class="sc">$</span>sex <span class="sc">==</span> pred_blm1<span class="sc">$</span>pred_sex) <span class="sc">/</span> <span class="fu">nrow</span>(pred_blm1)</span>
+<span id="annotated-cell-7-19"><a href="#annotated-cell-7-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-7-20"><a href="#annotated-cell-7-20" aria-hidden="true" tabindex="-1"></a>  blm1_results_vec[i] <span class="ot">&lt;-</span> acc_blm1</span>
+<span id="annotated-cell-7-21"><a href="#annotated-cell-7-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="annotated-cell-7-22"><a href="#annotated-cell-7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(blm1_results_vec) <span class="do">### mean accuracy of our given model</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="15" data-code-annotation="1">NOTE: <code>predict()</code> acts differently here than it did earlier, because we are giving it an object of class <code>c('glm', 'lm')</code> - instead of a <code>tidymodels</code> friendly class.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="cross-validation-with-tidymodels" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="cross-validation-with-tidymodels"><span class="header-section-number">7.2</span> Cross Validation with <code>tidymodels</code></h3>
+<p>Functions from the <code>tidymodels</code> packages automate a lot of that for us. Additionally, we can create a “workflow” that is easy to read and easy to modify/update with new models or even new algorithms.</p>
+<p>Resample the data into five folds (<code>v = 5</code>) in a single line - and optionally lets us also do <em>repeated</em> rounds of cross validation (<code>repeats</code> argument) at the same time! Here we only do 3 repeats to keep our examples from being too slow, but 10 would be a better choice.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>peng_train_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(peng_train_df, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="1" data-code-annotation="1">Usually “k-fold cross validation” but <code>tidymodels</code> calls it “v-fold”…?</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Now let’s create a <code>workflow</code> (from the <code>workflows</code> package in <code>tidymodels</code>) that combines our model and a formula. We already specified a binary logistic regression model above but we repeat that here for clarity. The workflow specifies how R will operate across all the folds.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>blr_mdl <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">'glm'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>blr_wf <span class="ot">&lt;-</span> workflows<span class="sc">::</span><span class="fu">workflow</span>() <span class="sc">%&gt;%</span>   <span class="do">### initialize workflow</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  workflows<span class="sc">::</span><span class="fu">add_model</span>(blr_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  workflows<span class="sc">::</span><span class="fu">add_formula</span>(sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>OK now let’s apply the workflow to our folded training dataset (using the <code>fit_resamples</code> function from the <code>tune</code> package in <code>tidymodels</code>), and see how it performs! Note <code>tune::collect_metrics()</code> automatically reports several relevant metrics for the type of model (classification vs.&nbsp;regression).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>blr_fit_folds <span class="ot">&lt;-</span> blr_wf <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  tune<span class="sc">::</span><span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">### Report out the predictive performance across the five folds:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>tune<span class="sc">::</span><span class="fu">collect_metrics</span>(blr_fit_folds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="model-selection" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">8</span> Model Selection</h2>
+<p>Our goal with machine learning is to find a model that best predicts our outcome of interest. Typically we have more than one candidate model to consider, including variations on predictors and/or entirely different algorithms. For each candidate model, we can apply the previous steps. Here, we will try several different algorithms and model specifications.</p>
+<ul>
+<li>Model specifications
+<ul>
+<li><code>sex ~ species + bill_length_mm + bill_depth_mm</code> (previous step)</li>
+<li><code>sex ~ species + bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g</code> (all biometrics)</li>
+<li><code>sex ~ species + island + year</code> (garbage model, for comparison)</li>
+</ul></li>
+<li>Algorithms
+<ul>
+<li>Binomial logistic regression (previous model)</li>
+<li>Random Forest classifier: ensemble of small decision trees</li>
+<li>Support Vector Machine classifier: finds best boundary that separates different groups</li>
+</ul></li>
+</ul>
+<section id="define-model-specifications" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="define-model-specifications"><span class="header-section-number">8.1</span> Define Model Specifications</h3>
+<p>We can create formula objects easily, and give them a short name for easy reference. This is handy to apply a model specification across multiple algorithms. The formula we would normally insert into the model function, we can just assign to a named object. R will not attempt to apply the formula until we call it within the model function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">&lt;-</span> sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">&lt;-</span> sex <span class="sc">~</span> species <span class="sc">+</span> bill_length_mm <span class="sc">+</span> bill_depth_mm</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">&lt;-</span> sex <span class="sc">~</span> species <span class="sc">+</span> island <span class="sc">+</span> year</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="define-model-architecture" class="level3" data-number="8.2">
+<h3 data-number="8.2" class="anchored" data-anchor-id="define-model-architecture"><span class="header-section-number">8.2</span> Define Model Architecture</h3>
+<p>Using <code>tidymodels</code> (specifically <code>parsnip</code> package) we can define the model architectures separately from the model specifications. Similar to the model specifications, this is handy to apply different algorithms easily. NOTE: you may need to install the <code>ranger</code> and <code>kernlab</code> packages - the model engines are not included in <code>tidymodels</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>blr_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'glm'</span>)</span>
+<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a>rf_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-5" class="code-annotation-target"><a href="#annotated-cell-12-5" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'ranger'</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="3">3</button><span id="annotated-cell-12-6" class="code-annotation-target"><a href="#annotated-cell-12-6" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span>
+<span id="annotated-cell-12-7"><a href="#annotated-cell-12-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8" aria-hidden="true" tabindex="-1"></a>svm_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">svm_linear</span>() <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="4">4</button><span id="annotated-cell-12-9" class="code-annotation-target"><a href="#annotated-cell-12-9" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'kernlab'</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="5">5</button><span id="annotated-cell-12-10" class="code-annotation-target"><a href="#annotated-cell-12-10" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">We already defined <code>blr_mdl</code> above, repeating here for clarity</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="5" data-code-annotation="2"><code>'ranger'</code> is the default engine for RF, so technically we don’t need to specify here, but if we wanted to use a different computational engine (e.g., <code>'randomForest'</code>), we could put that here.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="6" data-code-annotation="3">Random Forest can be used for classification OR regression; here need to specify which approach we want!</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="9" data-code-annotation="4">The default for <code>svm_linear</code> is <code>LiblineaR</code> but it doesn’t work well with character variables, so here we’ll specify an alternative computational engine from the <code>kernlab</code> package.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="10" data-code-annotation="5">Similar to random forest, support vector machines can be used for classification OR regression, so we need to specify which.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Computational Engines
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Most model algorithms are available from different computational engines, e.g., for logistic regression we could use the <code>glm()</code> implementation, or <code>glmnet</code>, <code>LiblineaR</code>, <code>stan</code>, etc. To see the available engines for an algorithm, use <code>show_engines()</code> with the name of the algorithm function in <code>parsnip</code>, e.g., <code>show_engines('logistic_reg')</code> or <code>show_engines('rand_forest')</code>.</p>
+</div>
+</div>
+</section>
+<section id="compare-models" class="level3" data-number="8.3">
+<h3 data-number="8.3" class="anchored" data-anchor-id="compare-models"><span class="header-section-number">8.3</span> Compare Models</h3>
+<p>Having defined the model specifications and architectures, let’s create workflows, apply them to our <code>peng_train_folds</code> set, and see the results. Note how little we have to change to test a completely different model!</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Logistic Regression</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Random Forest</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Support Vector Machines</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Here, the workflows are explicitly spelled out one at a time. In the other tabs, we show options for programmatic iteration!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>blr_spec1 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(blr_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec1) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>blr_spec2 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(blr_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec2) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>blr_spec3 <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(blr_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec3) <span class="sc">%&gt;%</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(blr_spec1, <span class="at">type =</span> <span class="st">'wide'</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(blr_spec2, <span class="at">type =</span> <span class="st">'wide'</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(blr_spec3, <span class="at">type =</span> <span class="st">'wide'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Iterate over the specifications using a <code>for</code> loop, printing out the metrics at the end of each iteration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>spec_list <span class="ot">&lt;-</span> <span class="fu">list</span>(spec1, spec2, spec3)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(spec <span class="cf">in</span> spec_list) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  rf_specs <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_model</span>(rf_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_formula</span>(spec) <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">collect_metrics</span>(rf_specs, <span class="at">type =</span> <span class="st">'wide'</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(results)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Iterate over the specifications using <code>purrr::map</code>, collecting the metrics across the specs as a list of dataframes, which we then bind together into a single dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>spec_list <span class="ot">&lt;-</span> <span class="fu">list</span>(spec1, spec2, spec3)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>svm_specs <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> spec_list,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> <span class="cf">function</span>(spec) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    mdl <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_model</span>(svm_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">add_formula</span>(spec) <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fit_resamples</span>(peng_train_folds)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect_metrics</span>(mdl, <span class="at">type =</span> <span class="st">'wide'</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>svm_specs_df <span class="ot">&lt;-</span> svm_specs <span class="sc">%&gt;%</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">as.character</span>(spec_list)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">'model_spec'</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>svm_specs_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="results" class="level3" data-number="8.4">
+<h3 data-number="8.4" class="anchored" data-anchor-id="results"><span class="header-section-number">8.4</span> Results</h3>
+<p>Across all algorithms, specification 1 (using all available biometric predictors) moderately outperformed specification 2 (with fewer biometric predictors), and specification 3 (with no biometrics) was generally worse than just random guessing.</p>
+<p>Across the algorithms, SVM <span class="math inline">\(\succsim\)</span> Logistic Regression <span class="math inline">\(\succ\)</span> Random Forest.</p>
+<p>Based on these performance evaluation metrics, for our final model let’s use specification 1 with a support vector machine algorithm.</p>
+</section>
+</section>
+<section id="finalizing-the-model" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="finalizing-the-model"><span class="header-section-number">9</span> Finalizing the Model</h2>
+<p>At this point, we have partitioned our data using cross validation to identify the best model. Now, we can put in <em>all</em> the training data into our selected model to finalize our model parameters, weights, and coefficients, then compare to the test data we set aside at the very beginning. The function <code>parsnip::last_fit()</code> does all this for us, when we pass it our <code>peng_split</code> object that contains both the <code>peng_train_df</code> and <code>peng_test_df</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">### set up our final model as a workflow</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>final_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(svm_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec1)    <span class="do">### specification with all biometric variables</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>final_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(final_workflow, peng_split)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(final_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="optional-recipes-for-pre-processing" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="optional-recipes-for-pre-processing"><span class="header-section-number">10</span> Optional: Recipes for Pre-Processing</h2>
+<p>For our example, our dataset was already pretty clean and well formed.<br>
+recipes: Manages data preprocessing and feature engineering. Use it to define the steps required to clean your data, handle missing values, normalize numeric variables, and encode categorical features.</p>
+</section>
+<section id="optional-model-tuning-for-improved-performance" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="optional-model-tuning-for-improved-performance"><span class="header-section-number">11</span> Optional: Model Tuning for Improved Performance</h2>
+<p>So far we have split our data, used cross validation to identify the best model algorithm and specification, then applied that to our full training data. The <code>tidymodels</code> model functions (<code>logistic_reg</code>, <code>random_forest</code>, <code>svm_linear</code>, etc.) each have several <em>hyperparameters</em>, configuration settings that affect how the model learns from the data. Out of the box, <code>tidymodels</code> assigns sensible values for those hyperparameters, but in some cases, those default values can be tweaked to improve the machine learning performance - particularly to avoid overfitting and underfitting. Model parameters (such as model coefficients and weights) are learned from the data, but <em>hyperparameters</em> control the learning process itself.</p>
+<p>Random Forest, for example, has parameters that control the number of decision trees, the number of random features (variables) considered at each node split, tree depth, etc. Support Vector Machines are configured with parameters for kernel (the mathematical function to transform data into higher-dimensional space - linear, polynomial, distance-based methods), and regularization parameter C and gamma parameter <span class="math inline">\(\gamma\)</span> to trade off between smoother vs.&nbsp;more tightly curving decision boundaries. Other algorithms, including logistic regression, might have hyperparameters to apply penalties or costs to large coefficients or large feature sets.</p>
+<section id="common-model-tuning-algorithms" class="level3" data-number="11.1">
+<h3 data-number="11.1" class="anchored" data-anchor-id="common-model-tuning-algorithms"><span class="header-section-number">11.1</span> Common Model Tuning Algorithms</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Grid Search</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Randomized Search</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false">Bayesian Optimization</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>A grid search tuning algorithm assigns a vector of values to test for each hyperparameter. Across multiple hyperparameters, this creates a multi-dimensional grid or array of possible combinations. Grid search checks every single combination to look for the optimal set. As such, it is intuitive and thorough, but computationally expensive - a brute force approach.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/grid_search.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="images/r_machine_learning_tidymodels/grid_search.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="Scatter plot showing a uniform 5-by-9 grid of red dots evenly spaced across the hyperparameter 1 (x-axis, 0 to 1) and hyperparameter 2 (y-axis, -1 to 1) space, illustrating how grid search evaluates every combination of a predefined set of values"></a></p>
+</figure>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>A randomized search tuning algorithm randomly samples many potential combinations of hyperparameters. The values to test for each hyperparameter are drawn from some distribution provided by the user. Unlike grid search, this tuning algorithm concentrates its efforts on regions of each hyperparameter that are most likely according to the given probability distributions, and is generally able to find a good combination faster than a complete grid search. In the example image, test values for hyperparameter 1 are chosen assuming a normal distribution, while values for hyperparameter 2 are chosen from a skewed distribution.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/randomized_search.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="images/r_machine_learning_tidymodels/randomized_search.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="Scatter plot with marginal density curves showing approximately 20 red dots randomly distributed across the hyperparameter 1 (x-axis, roughly normal distribution) and hyperparameter 2 (y-axis, right-skewed distribution) space, illustrating how randomized search samples from probability distributions rather than a fixed grid"></a></p>
+</figure>
+</div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>Bayesian optimization tuning algorithm iteratively builds a probabilistic map across hyperparameter space, using a Gaussian process (GP) to approximate the true objective function we want to maximize. To identify likely values to sample, the algorithm focuses on areas of the parameter space with high information value. This balances “exploration” (areas of high uncertainty) against “exploitation” (areas of high expected value). As each point is tested, that information is fed back to the probabilistic model of parameter space, and the next point is chosen to once again maximize the expected information value.</p>
+<p>In the example shown (for a single hyperparameter, for simplicity), the black points have already been tested - so uncertainty collapses to zero. A value of ~0.18 falls in a region of high uncertainty (wide confidence interval) and likely high value (GP mean is high). After sampling this point, the confidence intervals and GP mean function will shift accordingly, and the iteration will continue until some stop rule is reached.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/bayesian_optimization.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="images/r_machine_learning_tidymodels/bayesian_optimization.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="Line chart of Bayesian hyperparameter optimization for a single hyperparameter: dark blue dots mark observed values, the blue line and shaded band show the GP mean and uncertainty, and the orange dashed line shows the true objective function. A red dashed vertical line marks the next candidate point at approximately 0.18, chosen because it has high uncertainty and a high GP mean. An arrow labels the best observed value so far"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="tuning-model-hyperparameters" class="level3" data-number="11.2">
+<h3 data-number="11.2" class="anchored" data-anchor-id="tuning-model-hyperparameters"><span class="header-section-number">11.2</span> Tuning Model Hyperparameters</h3>
+<p>Each model type has a different set of hyperparameters with different default values and ranges, which can be found by querying the model function help page (for our purposes, <code>?svm_linear</code> reveals two parameters, <code>cost</code> and <code>margin</code>).</p>
+<p>To prepare for tuning, we redefine our model and set the model’s parameters to a placeholder function <code>tune()</code> to flag it for optimization. Then let’s rebuild our model specification using <code>spec1</code> from above (the one with all the biometric variables) using the same workflow from before. We will also reuse our folds defined above - <code>peng_train_folds</code> defined with <code>vfold_cv()</code> - for cross validation during the tuning process.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mdl_tune <span class="ot">&lt;-</span> <span class="fu">svm_linear</span>(<span class="at">cost =</span> <span class="fu">tune</span>(), <span class="at">margin =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">'kernlab'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">'classification'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>wf_tune <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(mdl_tune) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s try Bayesian optimization! (A grid search is already outlined in the <a href="https://www.tidymodels.org/start/tuning/#tuning"><code>tidymodels</code> documentation</a>).</p>
+<p>We provide our model specification and our resamples to the <code>tune_bayes()</code> function to identify the best values for our parameters. From these results, we select the best parameter set using the cleverly named function <code>select_best()</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bayes_results <span class="ot">&lt;-</span> <span class="fu">tune_bayes</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> wf_tune,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> peng_train_folds</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>best_params <span class="ot">&lt;-</span> <span class="fu">select_best</span>(bayes_results, <span class="at">metric =</span> <span class="st">'roc_auc'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can insert these best hyperparameter values back into our workflow, and then perform our final fit just as we did above.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>final_tuned_wf <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(wf_tune, best_params)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>final_tuned_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(final_tuned_wf, peng_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="optional-model-interpretation" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="optional-model-interpretation"><span class="header-section-number">12</span> Optional: Model Interpretation</h2>
+<p>Often we want to know which variables were most influential or important to the predictive power of our Machine Learning model. For a simple linear regression, the magnitude, sign, and p value (or t score) of the coefficients gives us a lot of information about the influence of the variables. For more complex ML models, we generally trade off predictive ability against mechanistic understanding.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+To ML or not to ML? Predictive ability vs.&nbsp;scientific insight
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Machine learning is often quite amazing at creating predictive models from data, without even needing to know much <em>a priori</em> about the data or ecological system described by the data. If <em>predictions</em> are the important output of an analysis, ML is a great tool</p>
+<p>However, we are often more interested in developing <em>insights</em> about the ecological system described by the data. In this case, a <em>structural model</em> that incorporates theoretical underpinnings of the system may be more informative, even if its predictive ability is lower.</p>
+<p><strong>Machine learning</strong> creates predictive models directly from the data - <strong>what will happen</strong>. <strong>Structural models</strong> are informed by expert domain knowledge and theory - <strong>why will that happen</strong>. Which question are you asking will help determine which approach you should take.</p>
+</div>
+</div>
+<p>The <code>vip</code> package (“Variable Importance”) combines reasonably well with <code>tidymodels</code> (note, as of this publishing, <code>vip</code> is not available on CRAN - install with <code>remotes::install_github("koalaverse/vip")</code>). We can extract our fit information, using <code>tune::extract_fit_parsnip</code> (since our fit is performed using <code>parsnip</code> functions), and then hand this off to the <code>vip::vip()</code> function.</p>
+<p><strong>UN</strong>fortunately, this doesn’t work well for all model types - e.g., <code>svm_linear</code> models are not well supported (yet?). And for certain models (e.g., random forest with <code>ranger</code> engine), you may need to set parameters in the definition of the model ahead of time. (It can be a bit finicky and model dependent! be patient and Google well!)</p>
+<p>To demonstrate, let’s recreate a final fit using our Binomial Logistic Regression model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>final_workflow_blr <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(blr_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(spec1)    <span class="do">### specification with all biometric variables</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>final_fit_blr <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(final_workflow_blr, peng_split)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>final_fit_blr <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> sex, .pred_male, <span class="at">event_level =</span> <span class="st">'second'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>final_fit_blr <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  workflows<span class="sc">::</span> <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  vip<span class="sc">::</span><span class="fu">vip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-create-a-regression-model" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="exercise-create-a-regression-model"><span class="header-section-number">13</span> Exercise: Create a Regression Model</h2>
+<p>From the <code>ltersampler</code> R package, load the <code>knz_bison</code> dataset of bison metrics:</p>
+<ul>
+<li>Historical records of end-of-season weights for individual bison at Konza Prairie Biological Station LTER.</li>
+</ul>
+<p><a href="https://lter.github.io/lterdatasampler/articles/knz_bison_vignette.html">More information on the dataset here</a>.</p>
+<p>For this exercise, we will use the methods above to create and assess several candidate models to predict bison weight based on some combination of variables within the dataset, then select one of the candidate models and determine the performance of the final fit.</p>
+<ul>
+<li><code>data_code</code>: a character denoting the dataset code</li>
+<li><code>rec_year</code>/<code>rec_month</code>/<code>rec_day</code>: a number denoting the year/month/day of observation</li>
+<li><code>animal_code</code>: a character denoting the unique individual bison identification code based on ear tag number</li>
+<li><code>animal_sex</code>: a character denoting the sex of bison: M = male, F = female, U = unknown</li>
+<li><code>animal_weight</code>: a number denoting bison weight in pounds</li>
+<li><code>animal_yob</code>: a number denoting the year animal was born</li>
+</ul>
+<section id="load-bison-data" class="level3" data-number="13.1">
+<h3 data-number="13.1" class="anchored" data-anchor-id="load-bison-data"><span class="header-section-number">13.1</span> Load bison data</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lterdatasampler)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(knz_bison) </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># head(knz_bison)</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # A tibble: 6 × 8</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># #   data_code rec_year rec_month rec_day animal_code animal_sex animal_weight animal_yob</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># #   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # 1 CBH01         1994        11       8 813         F                    890       1981</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># # 2 CBH01         1994        11       8 834         F                   1074       1983</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # 3 CBH01         1994        11       8 B-301       F                   1060       1983</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>bison_clean <span class="ot">&lt;-</span> knz_bison <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-hint no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-hint">
+<p>These data are NOT linear:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/r_machine_learning_tidymodels/knz_bison.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="images/r_machine_learning_tidymodels/knz_bison.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" alt="Scatter plot of Konza Prairie bison data: recorded weight in pounds (y-axis) versus bison age in years (x-axis), with points colored by sex (purple = female, yellow = male). Both sexes show rapid weight gain from birth to about age 5, after which females plateau around 1,000 lbs while males continue gaining to roughly 1,500 lbs before leveling off"></a></p>
+</figure>
+</div>
+<p>This non-linear data is well suited to non-linear least squares estimation, particularly for an age-growth relationship. But not knowing that relationship, how well can different ML algorithms create predictive models?</p>
+<p>We should expect that a linear model will perform poorly, and a linear SVM may similarly struggle. But a good ML algorithm may be able to track non-linearities by learning on the data itself.</p>
+<p>Also notable, the Gompertz model is a function of <em>age</em> - and <em>age</em> is not a variable in the dataset! A good ML algorithm may be able to infer age by noting the relationships between <code>animal_weight</code>, <code>animal_yob</code>, and <code>rec_year</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Define model specifications
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>Identify two potentially good model specifications, and one likely very poor specification. Store these specifications as formula objects with names of your choice.</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer">
+<p>Your models may vary! Some options:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Drop animal_code and data_code; all date info</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>bison_spec1 <span class="ot">&lt;-</span> animal_weight <span class="sc">~</span> rec_year <span class="sc">+</span> rec_month <span class="sc">+</span> rec_day <span class="sc">+</span> animal_sex <span class="sc">+</span> animal_yob</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="do">### Predict using animal_yob and rec_year (can it identify the age?) and sex</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>bison_spec2 <span class="ot">&lt;-</span> animal_weight <span class="sc">~</span> rec_year <span class="sc">+</span> animal_sex <span class="sc">+</span> animal_yob</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="do">### Just try sex and the year of birth?</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>bison_spec3 <span class="ot">&lt;-</span> animal_weight <span class="sc">~</span> animal_sex <span class="sc">+</span> animal_yob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Define several model architectures
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>Choose several potential model architectures and define them, including setting an engine. Random Forest and Support Vector machines both can be used for classification (as in the demonstration) and regression (as you might choose to do here!).</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer">
+<p>Again, your models may differ - here are some potential options:</p>
+<div class="sourceCode" id="annotated-cell-27"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-1" class="code-annotation-target"><a href="#annotated-cell-27-1" aria-hidden="true" tabindex="-1"></a>bison_lm_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-27-2"><a href="#annotated-cell-27-2" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'lm'</span>)</span>
+<span id="annotated-cell-27-3"><a href="#annotated-cell-27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-27-4"><a href="#annotated-cell-27-4" aria-hidden="true" tabindex="-1"></a>bison_rf_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span></span>
+<span id="annotated-cell-27-5"><a href="#annotated-cell-27-5" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'ranger'</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="2">2</button><span id="annotated-cell-27-6" class="code-annotation-target"><a href="#annotated-cell-27-6" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_mode</span>(<span class="st">'regression'</span>)</span>
+<span id="annotated-cell-27-7"><a href="#annotated-cell-27-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-27-8"><a href="#annotated-cell-27-8" aria-hidden="true" tabindex="-1"></a>bison_svm_mdl <span class="ot">&lt;-</span> parsnip<span class="sc">::</span><span class="fu">svm_linear</span>() <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="3">3</button><span id="annotated-cell-27-9" class="code-annotation-target"><a href="#annotated-cell-27-9" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_engine</span>(<span class="st">'kernlab'</span>) <span class="sc">%&gt;%</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="4">4</button><span id="annotated-cell-27-10" class="code-annotation-target"><a href="#annotated-cell-27-10" aria-hidden="true" tabindex="-1"></a>  parsnip<span class="sc">::</span><span class="fu">set_mode</span>(<span class="st">'regression'</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-27" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-27" data-code-lines="1" data-code-annotation="1">Classic linear regression instead of binomial logistic - using the base <code>lm</code> engine</span>
+</dd>
+<dt data-target-cell="annotated-cell-27" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-27" data-code-lines="6" data-code-annotation="2">Set the mode for Random Forest to be regression instead of classification</span>
+</dd>
+<dt data-target-cell="annotated-cell-27" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-27" data-code-lines="9" data-code-annotation="3">Still using the <code>kernlab</code> engine, but the <code>LiblineaR</code> default may also work - though you may need to install the package!</span>
+</dd>
+<dt data-target-cell="annotated-cell-27" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-27" data-code-lines="10" data-code-annotation="4">Set the mode to regression, instead of classification</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Partition data
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>Partition data into a training and testing set (stratifying if necessary), then set up the training set for cross validation. Choose a number of folds, and a number of repeats if desired.</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer">
+<p>You may choose to stratify on site/site name, or date, but the samples are reasonably distributed across those variables. Here’s code that does not stratify the resampling. We choose 10 folds and 5 repeats, though you may choose other options.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>bison_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(bison_clean, <span class="at">prop =</span> .<span class="dv">85</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>bison_train <span class="ot">&lt;-</span> <span class="fu">training</span>(bison_split)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>bison_test   <span class="ot">&lt;-</span> <span class="fu">testing</span>(bison_split)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>bison_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(bison_train, <span class="at">v =</span> <span class="dv">10</span>, <span class="at">repeats =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Fit data to models and assess performance
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>Iterate (manually or programmatically) over the specs and models, fitting the CV folds, then gather the performance metrics to compare results. For iteration, consider a for loop or <code>purrr::map</code> (potentially nesting to iterate over multiple variables).</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer">
+<p>Here is an example using <code>purrr::map_df</code> to fit model architectures to each of our model specs, and gather the results as rows in a data frame. First we define a function that takes a model and a spec, and performs the fit then reports metrics.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fit_mdl_spec <span class="ot">=</span> <span class="cf">function</span>(mdl, spec, folds) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  fit_result <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_model</span>(mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_formula</span>(spec) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_resamples</span>(folds)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>(fit_result, <span class="at">type =</span> <span class="st">'wide'</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>spec1_results <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> <span class="fu">list</span>(bison_lm_mdl, bison_rf_mdl, bison_svm_mdl),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> fit_mdl_spec,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> bison_spec1, <span class="at">folds =</span> bison_folds</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>spec2_results <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> <span class="fu">list</span>(bison_lm_mdl, bison_rf_mdl, bison_svm_mdl),</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> fit_mdl_spec,</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> bison_spec2, <span class="at">folds =</span> bison_folds</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>spec3_results <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> <span class="fu">list</span>(bison_lm_mdl, bison_rf_mdl, bison_svm_mdl),</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> fit_mdl_spec,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">spec =</span> bison_spec3, <span class="at">folds =</span> bison_folds</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Spec 1 with a Random Forest does an excellent job of predicting! How well does your model perform?</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>algorithm</th>
+<th style="text-align: right;">rmse</th>
+<th style="text-align: right;">rsq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Linear regression</td>
+<td style="text-align: right;">243.</td>
+<td style="text-align: right;">0.491</td>
+</tr>
+<tr class="even">
+<td>Random forest</td>
+<td style="text-align: right;">122.</td>
+<td style="text-align: right;">0.924</td>
+</tr>
+<tr class="odd">
+<td>SVM linear</td>
+<td style="text-align: right;">247.</td>
+<td style="text-align: right;">0.478</td>
+</tr>
+</tbody>
+</table>
+<p>The RF model on the year/sex/DOB only performed well, R<sup>2</sup> ~ .76 of the variance, while the model on site and DOB only explained R<sup>2</sup> ~ 0.12 of the variance.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise  - Select a model and perform final fit
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="callout-exercise">
+<p>From the cross validation results, choose an appropriate model, do a final fit on the full training data, then compare performance against the test set.</p>
+<div class="callout callout-style-default callout-answer no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout-answer">
+<div class="sourceCode" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>bison_final_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(bison_rf_mdl) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(bison_spec1) <span class="do">### specification with full date, yob, sex</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>bison_final_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(bison_final_wf, bison_split)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>bison_final_metrics <span class="ot">&lt;-</span> <span class="fu">collect_metrics</span>(bison_final_fit)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>bison_final_preds <span class="ot">&lt;-</span> <span class="fu">collect_predictions</span>(bison_final_fit)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bison_final_metrics)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bison_final_preds, <span class="fu">aes</span>(<span class="at">x =</span> animal_weight, <span class="at">y =</span> .pred)) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">'red'</span>) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><a href="images/r_machine_learning_tidymodels/bison_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="images/r_machine_learning_tidymodels/bison_plot.png" class="img-fluid quarto-figure quarto-figure-center" style="width:70.0%" alt="Scatter plot of model-predicted bison weight (.pred, y-axis) versus actual bison weight (animal_weight, x-axis) with a red diagonal reference line. Points cluster tightly around the line from roughly 400 to 1,200 lbs, indicating good model fit, with some spread at higher weights above 1,200 lbs"></a> Considering that the weight of the bison is driven primarily by the bison’s age, and age is NOT in the dataset as its own variable, Random Forest does a remarkable job of picking out the patterns based on DOB and year of observation.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/nceas-learning-hub\.github\.io\/lhCatalog\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright © 2026, NCEAS</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>
